@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.idea/
+_verify_pc.py
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+*secret*
+*credentials*
+
+# Runtime indexes, generated answers, and logs
+data/kb/cache/
+data/kb/index/
+data/kb/vecstore_*/
+data/nomiracl/chinese/bm25_*.pkl
+data/nomiracl/chinese/vecstore_*/
+data/nomiracl/chinese/*cache*.json
+data/nomiracl/chinese/query_embeddings_*
+*.log

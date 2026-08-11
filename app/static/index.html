@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MiniRAG · 知识库问答</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <div class="brand-mark">MR</div>
+      <div class="brand-name">MiniRAG</div>
+      <div class="brand-sub">知识库问答</div>
+    </div>
+
+    <section class="kb">
+      <div class="kb-head">
+        <span class="sec-label">知识库</span>
+        <span id="built-badge" class="badge badge-wait">—</span>
+      </div>
+      <div class="kb-stats">
+        <div class="stat"><b id="stat-docs">0</b><span>文档</span></div>
+        <div class="stat"><b id="stat-chunks">0</b><span>分块</span></div>
+        <div class="stat"><b id="stat-terms">0</b><span>索引词</span></div>
+      </div>
+
+      <div class="actions">
+        <label class="btn btn-primary" for="file-input">上传文档</label>
+        <input type="file" id="file-input" accept=".md,.txt" multiple hidden>
+        <div class="dir-row">
+          <input id="dir-input" class="text-input" value="C:\Users\shyh\Desktop\maxkb_test_docs" spellcheck="false">
+          <button id="btn-import" class="btn">导入目录</button>
+        </div>
+        <button id="btn-rebuild" class="btn">重建索引</button>
+      </div>
+
+      <div class="doc-list">
+        <div class="sec-label">文档</div>
+        <ul id="doc-ul"></ul>
+        <div id="doc-empty" class="empty">暂无文档。上传 .md / .txt，或从目录导入。</div>
+      </div>
+
+      <div class="eval">
+        <div class="eval-head">
+          <button id="btn-eval" class="btn btn-ghost">跑评测</button>
+          <label class="btn btn-ghost" for="questions-file">换题目集</label>
+          <input type="file" id="questions-file" accept=".md,.txt" hidden>
+        </div>
+        <div id="q-info" class="q-info"></div>
+        <div id="eval-panel" class="eval-panel hidden"></div>
+      </div>
+    </section>
+  </aside>
+
+  <main class="stage">
+    <div class="stage-head">
+      <div class="stage-title">问答台</div>
+      <div class="stage-hint">答案中的 [1][2] 高亮标记对应下方证据卡片，点击可查看原文</div>
+    </div>
+
+    <div id="chat" class="chat">
+      <div class="chat-empty" id="chat-empty">
+        <div class="chat-empty-mark">?</div>
+        <div class="chat-empty-text">输入问题开始提问。<br>回答基于知识库文档，并标注可核查的来源编号。</div>
+      </div>
+    </div>
+
+    <form id="composer" class="composer">
+      <textarea id="input" rows="1" placeholder="输入问题，Enter 发送，Shift+Enter 换行" autocomplete="off"></textarea>
+      <button type="submit" class="btn btn-primary" id="btn-send">提问</button>
+    </form>
+  </main>
+</div>
+
+<div id="drawer" class="drawer hidden">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-label" id="drawer-label"></div>
+      <div class="drawer-meta" id="drawer-meta"></div>
+    </div>
+    <button class="btn btn-ghost" id="btn-drawer-close">关闭</button>
+  </div>
+  <pre class="drawer-text" id="drawer-text"></pre>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
