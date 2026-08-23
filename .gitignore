@@ -15,6 +15,9 @@ _verify_pc.py
 # Runtime indexes, generated answers, and logs
 data/kb/cache/
 data/kb/index/
+data/kb/blobs/
+data/kb/catalog.sqlite3
+data/kb/catalog.sqlite3-*
 data/kb/vecstore_*/
 data/nomiracl/chinese/bm25_*.pkl
 data/nomiracl/chinese/vecstore_*/

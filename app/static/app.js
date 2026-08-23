@@ -74,10 +74,10 @@ async function refreshStatus() {
     li.className = "doc-item";
     li.innerHTML = `
       <span class="doc-name" title="${esc(doc.name)}">${esc(doc.name)}</span>
-      <span class="ev-score">${doc.size} B</span>
-      <button class="doc-del" data-name="${esc(doc.name)}" title="删除">×</button>`;
+      <span class="ev-score">v${doc.version} · ${doc.size} B</span>
+      <button class="doc-del" data-id="${esc(doc.id)}" title="删除">×</button>`;
     li.querySelector(".doc-del").addEventListener("click", async () => {
-      await api("/api/delete", { method: "POST", body: JSON.stringify({ name: doc.name }) });
+      await api("/api/delete", { method: "POST", body: JSON.stringify({ document_id: doc.id }) });
       toast(`已删除 ${doc.name}`);
       await refreshStatus();
     });

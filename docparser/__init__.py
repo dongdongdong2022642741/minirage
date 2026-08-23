@@ -1,6 +1,6 @@
 """MiniRAG document parsing module.
 
-Parses .md / .txt files into structured Document objects so that the W2
+Parses text, PDF, DOCX and HTML files into structured Document objects so that the W2
 chunking step and the W3 storage step can rely on stable identities and
 metadata instead of bare strings.
 """

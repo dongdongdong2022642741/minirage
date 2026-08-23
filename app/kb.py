@@ -1,7 +1,9 @@
 """知识库服务：文档管理 + 混合索引构建/缓存 + 带引用问答 + 题目集评测。
 
 知识库目录结构（data/kb/）：
-    docs/        文档文件（网页上传或本地目录导入后复制到这里）
+    docs/        随项目提供的旧版文档（首次启动自动登记）
+    blobs/       按 SHA-256 保存的不可变文档版本
+    catalog.sqlite3  文档身份、版本和状态目录
     questions.md 评测题目集（独立于语料，可上传替换，格式见文件头部注释）
     cache/       按文档指纹命名的 BM25 pickle + 向量矩阵缓存（换文档自动换缓存）
 
@@ -14,9 +16,9 @@ import hashlib
 import json
 import pickle
 import re
-import shutil
 import sys
 import time
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -25,13 +27,27 @@ if str(ROOT) not in sys.path:
 
 from deepseek_chat import ask_deepseek
 from index import IndexBuilder, VectorStore, Searcher, fuse, rerank
-from docparser.loader import load_documents
+from index.embeddings import MODEL as EMBEDDING_MODEL
+from docparser.loader import SUPPORTED_SUFFIXES, parse_file
 from chunking.structured import chunk_structured
+from app.document_catalog import DocumentCatalog
 
 TOP_FOR_ANSWER = 5
 RAW_K = 10
 TEMPERATURE = 0.1
-SUPPORTED_SUFFIXES = {".md", ".txt"}
+INDEX_SCHEMA_VERSION = "enterprise-v1"
+
+
+@dataclass(frozen=True)
+class IndexedChunk:
+    chunk_id: str
+    document_id: str
+    version_id: str
+    label: str
+    text: str
+    heading_path: tuple[str, ...]
+    start_char: int
+    end_char: int
 
 PROMPT = (
     "你是检索问答助手。根据提供的资料回答问题，并在每个陈述后标注资料来源编号，如[1][2]。"
@@ -121,24 +137,29 @@ class KnowledgeBase:
         self.questions_path = self.root / "questions.md"
         self.docs_dir.mkdir(parents=True, exist_ok=True)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.catalog = DocumentCatalog(self.root)
+        self.catalog.migrate_directory(self.docs_dir, SUPPORTED_SUFFIXES)
         self._bm25 = None
         self._vector = None
-        self._chunks: list[tuple[str, str]] = []
+        self._chunks: dict[str, IndexedChunk] = {}
         self._fingerprint_cache: str | None = None
 
     # ---------- 文档管理 ----------
 
     def list_docs(self) -> list[dict]:
-        docs = []
-        for path in sorted(self.docs_dir.iterdir()):
-            if path.is_file():
-                stat = path.stat()
-                docs.append({
-                    "name": path.name,
-                    "size": stat.st_size,
-                    "mtime": stat.st_mtime,
-                })
-        return docs
+        return [
+            {
+                "id": doc["document_id"],
+                "name": doc["name"],
+                "size": doc["size_bytes"],
+                "mtime": doc["updated_at"],
+                "status": doc["status"],
+                "version": doc["version_number"],
+                "content_hash": doc["content_hash"],
+                "last_error": doc["last_error"],
+            }
+            for doc in self.catalog.list_documents()
+        ]
 
     def add_uploads(self, files: list[tuple[str, bytes]]) -> list[str]:
         saved = []
@@ -146,15 +167,8 @@ class KnowledgeBase:
             name = Path(name).name
             if Path(name).suffix.lower() not in SUPPORTED_SUFFIXES or not data:
                 continue
-            path = self.docs_dir / name
-            if path.exists():
-                stem, suffix = path.stem, path.suffix
-                i = 2
-                while (self.docs_dir / f"{stem}_{i}{suffix}").exists():
-                    i += 1
-                path = self.docs_dir / f"{stem}_{i}{suffix}"
-            path.write_bytes(data)
-            saved.append(path.name)
+            self.catalog.ingest(name, data, "upload")
+            saved.append(name)
         return saved
 
     def import_dir(self, directory: str) -> list[str]:
@@ -165,19 +179,32 @@ class KnowledgeBase:
         for path in sorted(src.iterdir()):
             if not path.is_file() or path.suffix.lower() not in SUPPORTED_SUFFIXES:
                 continue
-            dst = self.docs_dir / path.name
-            if dst.exists():
-                continue
-            shutil.copy2(path, dst)
+            self.catalog.ingest(path.name, path.read_bytes(), "directory", str(path.resolve()))
             imported.append(path.name)
         return imported
 
-    def delete_doc(self, name: str) -> bool:
-        path = self.docs_dir / Path(name).name
-        if path.is_file():
-            path.unlink()
-            return True
-        return False
+    def delete_doc(self, document_id: str) -> bool:
+        deleted = self.catalog.delete(document_id)
+        if deleted:
+            self._fingerprint_cache = None
+        return deleted
+
+    def document_versions(self, document_id: str) -> list[dict]:
+        fields = (
+            "version_id",
+            "version_number",
+            "content_hash",
+            "size_bytes",
+            "suffix",
+            "source_type",
+            "status",
+            "error",
+            "created_at",
+        )
+        return [
+            {field: version[field] for field in fields}
+            for version in self.catalog.versions(document_id)
+        ]
 
     # ---------- 题目集 ----------
 
@@ -217,26 +244,35 @@ class KnowledgeBase:
 
     def _fingerprint(self) -> str:
         h = hashlib.sha1()
-        for path in sorted(self.docs_dir.iterdir()):
-            if not path.is_file():
-                continue
-            stat = path.stat()
-            h.update(path.name.encode("utf-8"))
-            h.update(str(stat.st_size).encode("utf-8"))
-            h.update(str(stat.st_mtime_ns).encode("utf-8"))
+        h.update(INDEX_SCHEMA_VERSION.encode("utf-8"))
+        h.update(EMBEDDING_MODEL.encode("utf-8"))
+        for doc in sorted(self.catalog.active_versions(), key=lambda item: item["document_id"]):
+            h.update(doc["document_id"].encode("utf-8"))
+            h.update(doc["current_version_id"].encode("utf-8"))
+            h.update(doc["content_hash"].encode("utf-8"))
         return h.hexdigest()[:16]
 
-    def _load_chunks(self) -> list[tuple[str, str]]:
-        result = load_documents(self.docs_dir)
-        chunks: list[tuple[str, str]] = []
-        for doc in result.documents:
+    def _load_chunks(self) -> list[IndexedChunk]:
+        chunks: list[IndexedChunk] = []
+        for record in self.catalog.active_versions():
+            parsed = parse_file(self.catalog.resolve_path(record))
+            doc = replace(parsed, doc_id=record["current_version_id"], filename=record["name"])
             cr = chunk_structured(doc)
             for chunk in cr.chunks:
                 if chunk.parent_id is not None:
                     continue
                 heading = chunk.heading_path[-1] if chunk.heading_path else "引言"
                 label = f"{doc.filename} · {heading}"
-                chunks.append((label, chunk.text))
+                chunks.append(IndexedChunk(
+                    chunk_id=chunk.chunk_id,
+                    document_id=record["document_id"],
+                    version_id=record["current_version_id"],
+                    label=label,
+                    text=chunk.text,
+                    heading_path=chunk.heading_path,
+                    start_char=chunk.start_char,
+                    end_char=chunk.end_char,
+                ))
         return chunks
 
     def status(self) -> dict:
@@ -276,9 +312,10 @@ class KnowledgeBase:
         if not force and fp == self._fingerprint_cache:
             return self.status()
 
-        chunks = self._load_chunks()
-        if not chunks:
+        indexed_chunks = self._load_chunks()
+        if not indexed_chunks:
             raise ValueError("知识库为空：请先上传文档或导入目录")
+        chunks = [(chunk.chunk_id, chunk.text) for chunk in indexed_chunks]
 
         bm25_path = self.cache_dir / f"bm25_{fp}.pkl"
         vec_dir = self.cache_dir / f"vec_{fp}"
@@ -293,7 +330,7 @@ class KnowledgeBase:
             self._vector.save(vec_dir)
             print(f"kb: built + cached index for {fp}")
 
-        self._chunks = chunks
+        self._chunks = {chunk.chunk_id: chunk for chunk in indexed_chunks}
         self._fingerprint_cache = fp
         self._save_meta(fp, len(chunks), len(self._bm25.postings))
         return self.status()
@@ -308,28 +345,27 @@ class KnowledgeBase:
             vec_dir = self.cache_dir / f"vec_{fp}"
             self._bm25 = pickle.loads(bm25_path.read_bytes())
             self._vector = VectorStore.load(vec_dir)
-            self._chunks = self._load_chunks()
+            self._chunks = {chunk.chunk_id: chunk for chunk in self._load_chunks()}
             self._fingerprint_cache = fp
             return
         self.rebuild()
 
     # ---------- 问答 ----------
 
-    def _retrieve(self, query: str) -> list[tuple[str, float, str]]:
+    def _retrieve(self, query: str) -> list[tuple[IndexedChunk, float]]:
         self._ensure_built()
         searcher = Searcher(self._bm25, self._vector)
         bm25_hits = searcher.bm25_search(query, k=RAW_K)
         vector_hits = searcher.vector_search(query, k=RAW_K)
         hits = rerank(fuse(bm25_hits, vector_hits, k=TOP_FOR_ANSWER, method="rrf"),
                       bm25_hits, vector_hits)[:TOP_FOR_ANSWER]
-        text_by_label = dict(self._chunks)
-        return [(label, score, text_by_label[label]) for label, score in hits]
+        return [(self._chunks[chunk_id], score) for chunk_id, score in hits]
 
     def ask(self, query: str) -> dict:
         if not query.strip():
             raise ValueError("问题不能为空")
         hits = self._retrieve(query)
-        evidence = [(label, text) for label, _score, text in hits]
+        evidence = [(chunk.chunk_id, chunk.text) for chunk, _score in hits]
         answer = ask_deepseek(build_prompt(query, evidence), temperature=TEMPERATURE)
         retried = False
         if is_refusal(answer):
@@ -343,8 +379,19 @@ class KnowledgeBase:
             "retried": retried,
             "citations": parse_citations(answer),
             "evidence": [
-                {"rank": i + 1, "label": label, "score": score, "text": text}
-                for i, (label, score, text) in enumerate(hits)
+                {
+                    "rank": i + 1,
+                    "chunk_id": chunk.chunk_id,
+                    "document_id": chunk.document_id,
+                    "version_id": chunk.version_id,
+                    "label": chunk.label,
+                    "score": score,
+                    "text": chunk.text,
+                    "heading_path": list(chunk.heading_path),
+                    "start_char": chunk.start_char,
+                    "end_char": chunk.end_char,
+                }
+                for i, (chunk, score) in enumerate(hits)
             ],
         }
 
@@ -356,7 +403,7 @@ class KnowledgeBase:
         for q in questions:
             qid, query, kind, checkpoints = q["qid"], q["query"], q["kind"], q["checkpoints"]
             hits = self._retrieve(query)
-            evidence = [(label, text) for label, _score, text in hits]
+            evidence = [(chunk.chunk_id, chunk.text) for chunk, _score in hits]
             answer = ask_deepseek(build_prompt(query, evidence), temperature=TEMPERATURE)
             retried = False
             if is_refusal(answer):

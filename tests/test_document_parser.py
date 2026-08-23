@@ -3,6 +3,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from docparser import Document, load_documents, parse_file
 
@@ -46,6 +47,83 @@ class ParseFileTests(unittest.TestCase):
             empty.write_text("", encoding="utf-8")
             with self.assertRaises(ValueError):
                 parse_file(empty)
+
+    def test_parses_docx_headings_paragraphs_and_tables(self):
+        from docx import Document as DocxDocument
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manual.docx"
+            source = DocxDocument()
+            source.add_heading("操作手册", level=1)
+            source.add_paragraph("启动设备前检查电源。")
+            table = source.add_table(rows=2, cols=2)
+            table.cell(0, 0).text = "项目"
+            table.cell(0, 1).text = "要求"
+            table.cell(1, 0).text = "温度"
+            table.cell(1, 1).text = "20 度"
+            source.save(path)
+
+            doc = parse_file(path)
+            self.assertEqual(doc.suffix, "docx")
+            self.assertEqual(doc.encoding, "docx")
+            self.assertIn("# 操作手册", doc.text)
+            self.assertIn("| 项目 | 要求 |", doc.text)
+            self.assertIn("| 温度 | 20 度 |", doc.text)
+
+    def test_parses_html_as_markdown_without_scripts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manual.html"
+            path.write_text(
+                "<html><body><h1>操作手册</h1><p>检查电源。</p>"
+                "<script>secret()</script><table><tr><th>项目</th><th>要求</th>"
+                "</tr><tr><td>温度</td><td>20 度</td></tr></table></body></html>",
+                encoding="utf-8",
+            )
+
+            doc = parse_file(path)
+            self.assertEqual(doc.suffix, "html")
+            self.assertIn("# 操作手册", doc.text)
+            self.assertIn("| 温度 | 20 度 |", doc.text)
+            self.assertNotIn("secret", doc.text)
+
+    def test_parses_pdf_pages_with_page_headings(self):
+        class FakePage:
+            def __init__(self, text):
+                self.text = text
+
+            def extract_text(self):
+                return self.text
+
+        class FakeReader:
+            def __init__(self, _path):
+                self.pages = [FakePage("第一页内容"), FakePage("第二页内容")]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manual.pdf"
+            path.write_bytes(b"%PDF-test")
+            with patch("pypdf.PdfReader", FakeReader):
+                doc = parse_file(path)
+
+            self.assertEqual(doc.encoding, "pdf")
+            self.assertIn("## 第 1 页", doc.text)
+            self.assertIn("## 第 2 页", doc.text)
+            self.assertIn("第二页内容", doc.text)
+
+    def test_scanned_pdf_without_text_requires_ocr(self):
+        class FakePage:
+            def extract_text(self):
+                return ""
+
+        class FakeReader:
+            def __init__(self, _path):
+                self.pages = [FakePage()]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "scan.pdf"
+            path.write_bytes(b"%PDF-test")
+            with patch("pypdf.PdfReader", FakeReader):
+                with self.assertRaisesRegex(ValueError, "require OCR"):
+                    parse_file(path)
 
 
 class LoadDocumentsTests(unittest.TestCase):
@@ -96,6 +174,14 @@ class LoadDocumentsTests(unittest.TestCase):
             result = load_documents(root)
             names = [d.filename for d in result.documents]
             self.assertEqual(names, ["notes.md"])
+
+    def test_binary_parse_failure_is_recorded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "broken.docx").write_bytes(b"not-a-docx")
+            result = load_documents(root)
+            self.assertEqual(result.documents, [])
+            self.assertEqual(result.issues[0].reason, "parse_error")
 
 
 class DocumentShapeTests(unittest.TestCase):

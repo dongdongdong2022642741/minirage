@@ -31,7 +31,7 @@ class DirRequest(BaseModel):
 
 
 class DeleteRequest(BaseModel):
-    name: str
+    document_id: str
 
 
 @app.get("/")
@@ -46,7 +46,10 @@ def status() -> dict:
 
 @app.post("/api/upload")
 async def upload(files: list[UploadFile] = File(...)) -> dict:
-    saved = kb.add_uploads([(f.filename or "", await f.read()) for f in files])
+    try:
+        saved = kb.add_uploads([(f.filename or "", await f.read()) for f in files])
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
     return {"saved": saved}
 
 
@@ -56,6 +59,8 @@ def import_dir(req: DirRequest) -> dict:
         imported = kb.import_dir(req.directory)
     except FileNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
     return {"imported": imported}
 
 
@@ -69,7 +74,12 @@ def rebuild() -> dict:
 
 @app.post("/api/delete")
 def delete(req: DeleteRequest) -> dict:
-    return {"deleted": kb.delete_doc(req.name)}
+    return {"deleted": kb.delete_doc(req.document_id)}
+
+
+@app.get("/api/documents/{document_id}/versions")
+def document_versions(document_id: str) -> dict:
+    return {"versions": kb.document_versions(document_id)}
 
 
 @app.post("/api/ask")
