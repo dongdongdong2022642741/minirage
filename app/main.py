@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from app.kb import KnowledgeBase
+from app.document_catalog import DocumentNotFoundError, DocumentStateError
 
 BASE = Path(__file__).resolve().parent
 ROOT = BASE.parent
@@ -80,6 +81,16 @@ def delete(req: DeleteRequest) -> dict:
 @app.get("/api/documents/{document_id}/versions")
 def document_versions(document_id: str) -> dict:
     return {"versions": kb.document_versions(document_id)}
+
+
+@app.post("/api/documents/{document_id}/restore")
+def restore_document(document_id: str) -> dict:
+    try:
+        return kb.restore_document(document_id)
+    except DocumentNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except DocumentStateError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
 
 
 @app.post("/api/ask")

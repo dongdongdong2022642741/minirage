@@ -12,6 +12,14 @@ from typing import Iterator
 from docparser.loader import parse_file
 
 
+class DocumentNotFoundError(LookupError):
+    """Raised when a document id does not exist in the catalog."""
+
+
+class DocumentStateError(RuntimeError):
+    """Raised when an operation conflicts with the document's current state."""
+
+
 class DocumentCatalog:
     """Persistent document identity and immutable content versions."""
 
@@ -249,6 +257,33 @@ class DocumentCatalog:
                 (now, now, document_id),
             ).rowcount
         return changed == 1
+
+    def restore(self, document_id: str) -> dict:
+        """Revive a soft-deleted document by pointing back to its ready version.
+
+        Guard-first strategy (plan B): a single guarded UPDATE performs the
+        state transition atomically; only when it affects no rows do we read
+        the current record once to diagnose which precondition failed.
+        """
+        now = time.time()
+        with self._database() as db:
+            changed = db.execute(
+                "UPDATE documents SET status = 'ready', deleted_at = NULL, "
+                "updated_at = ?, last_error = NULL "
+                "WHERE document_id = ? AND status = 'deleted' "
+                "AND current_version_id IS NOT NULL",
+                (now, document_id),
+            ).rowcount
+        if changed == 0:
+            record = self.get(document_id)
+            if record is None:
+                raise DocumentNotFoundError(f"document not found: {document_id}")
+            if record["status"] != "deleted":
+                raise DocumentStateError(f"document is not deleted: {document_id}")
+            raise DocumentStateError(
+                f"deleted document has no restorable version: {document_id}"
+            )
+        return self.get(document_id)
 
     def active_versions(self) -> list[dict]:
         return [

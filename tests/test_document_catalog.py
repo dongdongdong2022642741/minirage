@@ -1,9 +1,15 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
-from app.document_catalog import DocumentCatalog
+from app.document_catalog import (
+    DocumentCatalog,
+    DocumentNotFoundError,
+    DocumentStateError,
+)
 from app.kb import KnowledgeBase
+from index.embeddings import EMBEDDING_DIM
 
 
 class DocumentCatalogTests(unittest.TestCase):
@@ -63,6 +69,48 @@ class DocumentCatalogTests(unittest.TestCase):
         self.assertEqual(restored["status"], "ready")
         self.assertIsNone(restored["deleted_at"])
 
+    def test_restore_deleted_document_succeeds(self):
+        document = self.catalog.ingest("policy.md", b"# Policy\nValid")
+        self.assertTrue(self.catalog.delete(document["document_id"]))
+
+        restored = self.catalog.restore(document["document_id"])
+
+        self.assertEqual(restored["status"], "ready")
+        self.assertIsNone(restored["deleted_at"])
+        self.assertEqual(restored["current_version_id"], document["current_version_id"])
+        self.assertEqual(len(self.catalog.versions(document["document_id"])), 1)
+
+    def test_restore_twice_second_call_conflicts(self):
+        document = self.catalog.ingest("policy.md", b"# Policy\nValid")
+        self.assertTrue(self.catalog.delete(document["document_id"]))
+        self.catalog.restore(document["document_id"])
+
+        with self.assertRaises(DocumentStateError):
+            self.catalog.restore(document["document_id"])
+
+    def test_restore_non_deleted_document_conflicts(self):
+        document = self.catalog.ingest("policy.md", b"# Policy\nValid")
+
+        with self.assertRaises(DocumentStateError):
+            self.catalog.restore(document["document_id"])
+        self.assertEqual(self.catalog.get(document["document_id"])["status"], "ready")
+
+    def test_restore_unknown_document_not_found(self):
+        with self.assertRaises(DocumentNotFoundError):
+            self.catalog.restore("nonexistent-document-id")
+
+    def test_restore_document_without_ready_version_conflicts(self):
+        with self.assertRaises(ValueError):
+            self.catalog.ingest("broken.md", b"\x81")
+        record = self.catalog.get_by_name("broken.md")
+        self.assertTrue(self.catalog.delete(record["document_id"]))
+
+        with self.assertRaises(DocumentStateError):
+            self.catalog.restore(record["document_id"])
+        self.assertEqual(
+            self.catalog.get(record["document_id"])["status"], "deleted"
+        )
+
 
 class KnowledgeBaseLifecycleTests(unittest.TestCase):
     def test_repeated_upload_updates_one_logical_document(self):
@@ -109,6 +157,78 @@ class KnowledgeBaseLifecycleTests(unittest.TestCase):
             self.assertNotIn("stored_path", version)
             self.assertNotIn("source_uri", version)
             self.assertEqual(version["version_number"], 1)
+
+    def test_restore_returns_to_built_state_without_reembedding(self):
+        calls = []
+
+        def fake_embed(texts):
+            calls.append(list(texts))
+            return [[1.0] * EMBEDDING_DIM for _ in texts]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            kb = KnowledgeBase(Path(tmp))
+            kb.add_uploads([("handbook.md", b"# Handbook\nStable")])
+            doc_id = kb.list_docs()[0]["id"]
+
+            kb.rebuild(force=True, embed_fn=fake_embed)
+            self.assertEqual(len(calls), 1)
+            self.assertTrue(kb.status()["built"])
+
+            self.assertTrue(kb.delete_doc(doc_id))
+            self.assertFalse(kb.status()["built"])
+
+            kb.restore_document(doc_id)
+            self.assertTrue(kb.status()["built"])
+
+            kb.rebuild(force=True, embed_fn=fake_embed)
+            self.assertEqual(len(calls), 1)
+
+    def test_rebuild_failure_preserves_existing_index_and_keeps_serving(self):
+        def good_embed(texts):
+            return [[1.0] * EMBEDDING_DIM for _ in texts]
+
+        def broken_embed(texts):
+            raise RuntimeError("API timeout simulation")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            kb = KnowledgeBase(Path(tmp))
+            kb.add_uploads([("handbook.md", b"# Handbook\nInitial content")])
+            
+            # 1. 成功构建一代
+            kb.rebuild(force=True, embed_fn=good_embed)
+            self.assertTrue(kb.status()["built"])
+            self.assertIsNotNone(kb._bm25)
+            self.assertIsNotNone(kb._vector)
+            
+            # 2. 上传新文档，造成指纹变化
+            kb.add_uploads([("new_doc.md", b"# New\nSomething new")])
+            self.assertFalse(kb.status()["built"])
+            
+            # 3. 模拟第二代构建时抛出异常 (A1 策略)
+            with self.assertRaises(RuntimeError):
+                kb.rebuild(force=True, embed_fn=broken_embed)
+            
+            # 4. 关键验证：构建虽然失败，但原内存中的第一代索引依然完好无损，且没有残留脏目录
+            self.assertIsNotNone(kb._bm25)
+            self.assertIsNotNone(kb._vector)
+            hits = kb._retrieve("Handbook")
+            self.assertTrue(len(hits) > 0)
+            self.assertEqual(hits[0][0].label, "handbook.md · Handbook")
+
+    def test_generations_pruned_to_two_most_recent(self):
+        def fake_embed(texts):
+            return [[1.0] * EMBEDDING_DIM for _ in texts]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            kb = KnowledgeBase(Path(tmp))
+            # 构造 3 个版本触发 3 次代际构建
+            for i in range(1, 4):
+                kb.add_uploads([("handbook.md", f"# Handbook\nVersion {i}".encode("utf-8"))])
+                kb.rebuild(force=True, embed_fn=fake_embed)
+            
+            # B1 策略验证：generations 目录下仅保留最新的 2 代
+            gen_dirs = list(kb.generations_dir.glob("gen_*"))
+            self.assertEqual(len(gen_dirs), 2)
 
 
 if __name__ == "__main__":
