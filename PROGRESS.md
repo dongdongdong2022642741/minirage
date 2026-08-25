@@ -66,10 +66,14 @@ MiniRAG —— 复刻 RAGFlow 检索链路的带引用问答系统
   - [x] 阶段 1 验证：新增 8 条文档生命周期测试，总测试数 99→107，`python -m unittest discover -s tests -t . -v` 全绿；`compileall` 通过
   - [x] 阶段 2 多格式解析：PDF/DOCX/HTML/TXT/Markdown 统一转换为 `Document` 和 Markdown 文本后复用结构化分块；DOCX 保留标题/段落/表格，HTML 清理脚本并保留标题/列表/表格，PDF 按页插入页码标题；扫描 PDF 无可提取文本时明确失败并提示 OCR，旧 `.doc` 和图片语义不在本阶段范围
   - [x] 阶段 2 验证：增加 DOCX/HTML/PDF/扫描 PDF/二进制解析失败/HTML 版本链路共 6 条测试，总测试数 107→113；`unittest`、`compileall`、`git diff --check` 通过
-  - [ ] 阶段 3 增量索引与原子发布：按 Chunk 内容哈希复用未变化向量，仅新增/删除受影响 Chunk；构建临时代际并原子切换，失败时继续服务旧索引；增加缓存清理和并发锁
+  - [x] 阶段 3 增量索引与原子发布（2026-08-23 完成）：
+    - Chunk 向量缓存：键 = sha256(model + "\\0" + text)，存储于 `cache/vectors/<key前2位>/<key>.npy`；单向量原子读写，损坏/维度不符文件自动删除自愈；批量 `build_with_cache` 同批次去重，返回 `{total, reused, embedded}` 统计
+    - 原子代际发布：`cache/generations/gen_{fp}/` 沙箱构建 bm25.pkl + vec/ + manifest.json，`os.replace` 原子更名发布，内存指针最后热切换；构建失败清理沙箱并保留旧索引继续服务（A1 策略）
+    - 代际保留策略：仅保留当前与上一代共 2 代目录（B1 策略），全局 vectors 缓存不删
+    - 阶段 3 验证：新增 17 条测试（缓存键 4 + 单向量缓存 5 + 批量增量 4 + 原子发布/失败回滚/代际清理 2 + restore 相关 8 条中 2 条索引相关），总测试数 113→136 全绿；实测文档恢复后指纹回到旧值直接命中磁盘缓存，零 Embedding API 调用
   - [ ] 阶段 4 ACL：引入用户/角色和文档级 allow-list，Chunk 继承文档权限；在召回候选进入融合/生成前过滤；增加同题多身份权限矩阵和越权泄露率
   - [ ] 阶段 5 异步与运维：入库状态拆分 queued/parsing/chunking/embedding/ready/failed，增加重试、审计日志、P95 延迟、索引耗时和 API 成本
-  - [ ] 学习模式恢复点：阶段 3 暂不直接实现；下一步先训练“为什么不能按 chunk_id 复用向量、为什么应使用模型版本 + Chunk 文本 Hash、原子索引发布解决什么故障”，设计评审通过后只实现第一个最小函数
+  - [x] 学习模式恢复点（2026-08-23 更新）：阶段 3 已按"设计拍板→AI实现→用户审查"流程完成；阶段 4 ACL 启动前先训练"权限为什么必须在召回后融合前过滤、不能靠 Prompt 约束"，方案评审通过后再进入实现
 - **评测升级路线（2026-08-22 已定）：**
   - 定位：不以单一总分评价 RAG，拆成检索层、生成层、鲁棒拒答层、企业工程层分别报告；公开基准负责横向可比，企业自建题集负责真实业务验收
   - NoMIRACL 中文继续保留：现有全量检索结果作为基线，负责 Recall@k / MRR；后续补跑官方 relevant/non_relevant 任务，以 Hallucination Rate 和 Error Rate 测“无证据不乱答、有证据能识别”；因缺少完整高质量参考答案，不作为主要端到端答案正确性题集
