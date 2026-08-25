@@ -14,10 +14,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import pickle
 import re
+import shutil
 import sys
 import time
+import uuid
 from dataclasses import dataclass, replace
 from pathlib import Path
 
@@ -27,7 +30,7 @@ if str(ROOT) not in sys.path:
 
 from deepseek_chat import ask_deepseek
 from index import IndexBuilder, VectorStore, Searcher, fuse, rerank
-from index.embeddings import MODEL as EMBEDDING_MODEL
+from index.embeddings import MODEL as EMBEDDING_MODEL, build_with_cache
 from docparser.loader import SUPPORTED_SUFFIXES, parse_file
 from chunking.structured import chunk_structured
 from app.document_catalog import DocumentCatalog
@@ -134,9 +137,13 @@ class KnowledgeBase:
         self.root = Path(root)
         self.docs_dir = self.root / "docs"
         self.cache_dir = self.root / "cache"
+        self.vector_cache_dir = self.cache_dir / "vectors"
+        self.generations_dir = self.cache_dir / "generations"
         self.questions_path = self.root / "questions.md"
         self.docs_dir.mkdir(parents=True, exist_ok=True)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.vector_cache_dir.mkdir(parents=True, exist_ok=True)
+        self.generations_dir.mkdir(parents=True, exist_ok=True)
         self.catalog = DocumentCatalog(self.root)
         self.catalog.migrate_directory(self.docs_dir, SUPPORTED_SUFFIXES)
         self._bm25 = None
@@ -146,20 +153,21 @@ class KnowledgeBase:
 
     # ---------- 文档管理 ----------
 
+    @staticmethod
+    def _public_document(doc: dict) -> dict:
+        return {
+            "id": doc["document_id"],
+            "name": doc["name"],
+            "size": doc["size_bytes"],
+            "mtime": doc["updated_at"],
+            "status": doc["status"],
+            "version": doc["version_number"],
+            "content_hash": doc["content_hash"],
+            "last_error": doc["last_error"],
+        }
+
     def list_docs(self) -> list[dict]:
-        return [
-            {
-                "id": doc["document_id"],
-                "name": doc["name"],
-                "size": doc["size_bytes"],
-                "mtime": doc["updated_at"],
-                "status": doc["status"],
-                "version": doc["version_number"],
-                "content_hash": doc["content_hash"],
-                "last_error": doc["last_error"],
-            }
-            for doc in self.catalog.list_documents()
-        ]
+        return [self._public_document(doc) for doc in self.catalog.list_documents()]
 
     def add_uploads(self, files: list[tuple[str, bytes]]) -> list[str]:
         saved = []
@@ -188,6 +196,11 @@ class KnowledgeBase:
         if deleted:
             self._fingerprint_cache = None
         return deleted
+
+    def restore_document(self, document_id: str) -> dict:
+        restored = self.catalog.restore(document_id)
+        self._fingerprint_cache = None
+        return self._public_document(restored)
 
     def document_versions(self, document_id: str) -> list[dict]:
         fields = (
@@ -288,6 +301,16 @@ class KnowledgeBase:
             "bm25_terms": meta.get("bm25_terms") if built else None,
         }
 
+    def _generation_dir(self, fp: str) -> Path:
+        return self.generations_dir / f"gen_{fp}"
+
+    def _cleanup_old_generations(self, keep_fps: list[str]) -> None:
+        """B1 policy: keep active and immediate prior generation, remove older."""
+        keep_dirs = {self._generation_dir(fp).resolve() for fp in keep_fps}
+        for gen_path in self.generations_dir.glob("gen_*"):
+            if gen_path.is_dir() and gen_path.resolve() not in keep_dirs:
+                shutil.rmtree(gen_path, ignore_errors=True)
+
     def _load_meta(self) -> dict:
         meta_path = self.cache_dir / "meta.json"
         if meta_path.is_file():
@@ -304,10 +327,12 @@ class KnowledgeBase:
             "chunks": chunks,
             "bm25_terms": terms,
         }
-        (self.cache_dir / "meta.json").write_text(
-            json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+        temp_meta = self.cache_dir / f".meta.{uuid.uuid4().hex}.tmp"
+        temp_meta.write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+        os.replace(temp_meta, self.cache_dir / "meta.json")
 
-    def rebuild(self, force: bool = False) -> dict:
+    def rebuild(self, force: bool = False, embed_fn=None) -> dict:
+        """Atomic generation build & publication with chunk-level vector reuse."""
         fp = self._fingerprint()
         if not force and fp == self._fingerprint_cache:
             return self.status()
@@ -317,22 +342,66 @@ class KnowledgeBase:
             raise ValueError("知识库为空：请先上传文档或导入目录")
         chunks = [(chunk.chunk_id, chunk.text) for chunk in indexed_chunks]
 
-        bm25_path = self.cache_dir / f"bm25_{fp}.pkl"
-        vec_dir = self.cache_dir / f"vec_{fp}"
-        if bm25_path.is_file() and (vec_dir / "matrix.npy").is_file():
-            self._bm25 = pickle.loads(bm25_path.read_bytes())
-            self._vector = VectorStore.load(vec_dir)
-            print(f"kb: loaded cached index for {fp}")
-        else:
-            self._bm25 = IndexBuilder().build(chunks)
-            self._vector = VectorStore.build(chunks)
-            bm25_path.write_bytes(pickle.dumps(self._bm25))
-            self._vector.save(vec_dir)
-            print(f"kb: built + cached index for {fp}")
+        gen_dir = self._generation_dir(fp)
+        bm25_file = gen_dir / "bm25.pkl"
+        vec_dir = gen_dir / "vec"
 
+        # 1. 检查当前代际目录是否已完整就绪
+        if bm25_file.is_file() and (vec_dir / "matrix.npy").is_file():
+            new_bm25 = pickle.loads(bm25_file.read_bytes())
+            new_vector = VectorStore.load(vec_dir)
+            print(f"kb: loaded generation for {fp}")
+        else:
+            # 2. 隔离沙箱构建：在临时目录生成全量资产
+            tmp_gen = self.generations_dir / f".gen_{fp}.{uuid.uuid4().hex}.tmp"
+            tmp_vec = tmp_gen / "vec"
+            tmp_gen.mkdir(parents=True, exist_ok=True)
+            try:
+                new_bm25 = IndexBuilder().build(chunks)
+                # 使用 chunk 向量缓存构建，未命中才调用 embedding
+                if embed_fn is not None:
+                    new_vector, _stats = build_with_cache(chunks, self.vector_cache_dir, embed_fn=embed_fn)
+                else:
+                    new_vector, _stats = build_with_cache(chunks, self.vector_cache_dir)
+                
+                (tmp_gen / "bm25.pkl").write_bytes(pickle.dumps(new_bm25))
+                new_vector.save(tmp_vec)
+                manifest = {
+                    "fingerprint": fp,
+                    "chunks": len(chunks),
+                    "bm25_terms": len(new_bm25.postings),
+                    "created_at": time.time(),
+                }
+                (tmp_gen / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+                
+                # 3. 原子更名发布
+                if gen_dir.exists():
+                    shutil.rmtree(gen_dir, ignore_errors=True)
+                os.replace(tmp_gen, gen_dir)
+                print(f"kb: built + published atomic generation for {fp}")
+            except Exception:
+                # A1 策略：构建异常清理临时沙箱，保留原内存与旧索引不受损
+                shutil.rmtree(tmp_gen, ignore_errors=True)
+                raise
+
+        # 4. 内存指针热切换
+        self._bm25 = new_bm25
+        self._vector = new_vector
         self._chunks = {chunk.chunk_id: chunk for chunk in indexed_chunks}
+        
+        # 记录上一代指纹以保留 2 代
+        old_meta = self._load_meta()
+        prior_fp = old_meta.get("fingerprint")
+        keep_fps = [fp]
+        if prior_fp and prior_fp != fp:
+            keep_fps.append(prior_fp)
+
+        self._save_meta(fp, len(chunks), len(new_bm25.postings))
         self._fingerprint_cache = fp
-        self._save_meta(fp, len(chunks), len(self._bm25.postings))
+
+        # 5. B1 策略：清理超过 2 代的历史目录
+        self._cleanup_old_generations(keep_fps)
+
         return self.status()
 
     def _ensure_built(self) -> None:
@@ -341,13 +410,15 @@ class KnowledgeBase:
         if self.status()["built"]:
             meta = self._load_meta()
             fp = meta["fingerprint"]
-            bm25_path = self.cache_dir / f"bm25_{fp}.pkl"
-            vec_dir = self.cache_dir / f"vec_{fp}"
-            self._bm25 = pickle.loads(bm25_path.read_bytes())
-            self._vector = VectorStore.load(vec_dir)
-            self._chunks = {chunk.chunk_id: chunk for chunk in self._load_chunks()}
-            self._fingerprint_cache = fp
-            return
+            gen_dir = self._generation_dir(fp)
+            bm25_file = gen_dir / "bm25.pkl"
+            vec_dir = gen_dir / "vec"
+            if bm25_file.is_file() and (vec_dir / "matrix.npy").is_file():
+                self._bm25 = pickle.loads(bm25_file.read_bytes())
+                self._vector = VectorStore.load(vec_dir)
+                self._chunks = {chunk.chunk_id: chunk for chunk in self._load_chunks()}
+                self._fingerprint_cache = fp
+                return
         self.rebuild()
 
     # ---------- 问答 ----------

@@ -8,10 +8,13 @@ Contract with Searcher:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
 import tempfile
+import uuid
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -21,6 +24,78 @@ API_URL = "https://api.siliconflow.cn/v1/embeddings"
 MODEL = "BAAI/bge-m3"
 EMBEDDING_DIM = 1024
 BATCH_SIZE = 64
+
+
+def embedding_cache_key(model: str, text: str) -> str:
+    """Content-addressed cache key for one chunk embedding.
+
+    A vector is a function of (model, text) only: chunk ids and document
+    versions must never appear in the key, or unchanged texts would be
+    re-embedded after every document update. The \\0 separator keeps
+    ("ab", "c") and ("a", "bc") distinct.
+    """
+    return hashlib.sha256(f"{model}\0{text}".encode("utf-8")).hexdigest()
+
+
+def _vector_cache_path(root_dir: str | os.PathLike[str], key: str) -> Path:
+    return Path(root_dir) / key[:2] / f"{key}.npy"
+
+
+def load_cached_vector(
+    root_dir: str | os.PathLike[str], key: str
+) -> np.ndarray | None:
+    """Load a single cached embedding vector.
+
+    Returns:
+        np.ndarray with shape (1024,) and float32 dtype on hit;
+        None on miss or if file is corrupted/invalid.
+        Corrupted/invalid content is safely removed to auto-heal cache.
+    """
+    path = _vector_cache_path(root_dir, key)
+    if not path.is_file():
+        return None
+    try:
+        vector = np.load(path, allow_pickle=False)
+        if vector.shape != (EMBEDDING_DIM,):
+            raise ValueError(f"Unexpected shape: {vector.shape}")
+        if not np.issubdtype(vector.dtype, np.floating):
+            raise ValueError(f"Unexpected dtype: {vector.dtype}")
+        return vector.astype(np.float32, copy=False)
+    except (ValueError, OSError):
+        # A2: Corrupted or non-vector file -> safely delete to avoid repeated invalid hits
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        return None
+
+
+def save_cached_vector(
+    root_dir: str | os.PathLike[str], key: str, vector: np.ndarray | list[float]
+) -> Path:
+    """Atomically save a single embedding vector to content-addressed cache."""
+    arr = np.asarray(vector, dtype=np.float32)
+    if arr.shape != (EMBEDDING_DIM,):
+        raise ValueError(
+            f"Expected vector shape ({EMBEDDING_DIM},), got {arr.shape}"
+        )
+
+    destination = _vector_cache_path(root_dir, key)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+
+    # Atomic write: np.save will append .npy if filename doesn't end with .npy
+    # So we give temp_file a .npy suffix to prevent unwanted rename by np.save
+    temp_file = destination.parent / f".{destination.stem}.{uuid.uuid4().hex}.tmp.npy"
+    try:
+        np.save(str(temp_file), arr, allow_pickle=False)
+        os.replace(temp_file, destination)
+    except Exception:
+        try:
+            temp_file.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+    return destination
 
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
@@ -125,6 +200,71 @@ class VectorStore:
             doc_ids = json.load(f)
         matrix = np.load(os.path.join(directory, "matrix.npy"))
         return cls(doc_ids, matrix)
+
+
+def build_with_cache(
+    docs: list[tuple[str, str]],
+    cache_dir: str | os.PathLike[str],
+    embed_fn=embed_texts,
+) -> tuple[VectorStore, dict[str, int]]:
+    """Build a VectorStore using content-addressed cache for chunk vectors.
+
+    - Reuses cached vectors by sha256(model \\0 text)
+    - Deduplicates missing texts within the batch to minimize embedding API spend
+    - Returns (store, {"total": N, "reused": M, "embedded": K})
+    """
+    total = len(docs)
+    if not docs:
+        empty_store = VectorStore([], np.zeros((0, EMBEDDING_DIM), dtype=np.float32), embed_fn=embed_fn)
+        return empty_store, {"total": 0, "reused": 0, "embedded": 0}
+
+    keys = [embedding_cache_key(MODEL, text) for _, text in docs]
+    vectors_by_key: dict[str, np.ndarray] = {}
+    missing_keys_to_text: dict[str, str] = {}
+    reused_count = 0
+
+    # 1. 查询缓存并按 key 去重缺失项
+    seen_in_batch: set[str] = set()
+    for key, (_doc_id, text) in zip(keys, docs):
+        if key in vectors_by_key or key in seen_in_batch:
+            reused_count += 1
+            continue
+        cached = load_cached_vector(cache_dir, key)
+        if cached is not None:
+            vectors_by_key[key] = cached
+            reused_count += 1
+        elif key not in missing_keys_to_text:
+            missing_keys_to_text[key] = text
+        seen_in_batch.add(key)
+
+    # 2. 仅对缺失且去重后的文本调用 Embedding API
+    if missing_keys_to_text:
+        unique_missing_keys = list(missing_keys_to_text.keys())
+        unique_missing_texts = [missing_keys_to_text[k] for k in unique_missing_keys]
+        raw_vectors = embed_fn(unique_missing_texts)
+        if len(raw_vectors) != len(unique_missing_keys):
+            raise RuntimeError(
+                f"Embedding function returned {len(raw_vectors)} vectors for {len(unique_missing_keys)} texts"
+            )
+
+        for key, raw_vec in zip(unique_missing_keys, raw_vectors):
+            arr = np.asarray(raw_vec, dtype=np.float32)
+            if arr.shape != (EMBEDDING_DIM,):
+                raise RuntimeError(f"Expected embedding dim {EMBEDDING_DIM}, got {arr.shape}")
+            save_cached_vector(cache_dir, key, arr)
+            vectors_by_key[key] = arr
+
+    # 3. 按原始顺序组装矩阵与 doc_ids
+    doc_ids = [doc_id for doc_id, _ in docs]
+    matrix = np.stack([vectors_by_key[key] for key in keys]).astype(np.float32, copy=False)
+    store = VectorStore(doc_ids, matrix, embed_fn=embed_fn)
+
+    stats = {
+        "total": total,
+        "reused": reused_count,
+        "embedded": len(missing_keys_to_text),
+    }
+    return store, stats
 
 
 if __name__ == "__main__":
