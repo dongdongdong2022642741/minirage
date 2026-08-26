@@ -1,0 +1,2137 @@
+{
+  "config": {
+    "top_k": 5,
+    "temperature": 0.1
+  },
+  "summary": {
+    "1Doc": {
+      "准确率(包含匹配)": "41/67",
+      "拒答数": 7
+    },
+    "2Docs": {
+      "准确率(包含匹配)": "21/55",
+      "拒答数": 6
+    },
+    "3Docs": {
+      "准确率(包含匹配)": "42/70",
+      "拒答数": 2
+    },
+    "overall": {
+      "准确率": "104/192"
+    }
+  },
+  "rows": [
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b33b82641eb8ecc1243#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁发现了70磅的可卡因？",
+      "gold": [
+        "简卡斯特"
+      ],
+      "pred_head": "根据资料[1]，发现70磅可卡因的是美国佛罗里达州坦帕市市长简·卡斯特（Jane Castor）及其"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b33b82641eb8ecc1243#1",
+      "refusal": false,
+      "hit": true,
+      "question": "这些毒品的估计市价超过多少美元？",
+      "gold": [
+        "100万美元"
+      ],
+      "pred_head": "根据资料[1]，这些毒品的估计市价超过100万美元（约合人民币721万元），具体为“估计价值超过10"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbb7#0",
+      "refusal": false,
+      "hit": true,
+      "question": "是谁提出了“七不得”提醒告诫？",
+      "gold": [
+        "市场价格秩序稳定"
+      ],
+      "pred_head": "根据资料[1]，市场监管总局于2023年8月5日发布关于汛期维护市场价格秩序稳定的公告，对相关经营者"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbb7#1",
+      "refusal": false,
+      "hit": false,
+      "question": "“七不得”提醒告诫的目的是什么？",
+      "gold": [
+        "维护市场价格秩序稳定"
+      ],
+      "pred_head": "根据资料[1]，市场监管总局发布“七不得”提醒告诫的目的是“为保障洪涝地区重要民生商品和服务市场价格"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbb7#2",
+      "refusal": false,
+      "hit": true,
+      "question": "“七不得”提醒告诫是为了维护什么时期的市场价格秩序稳定？",
+      "gold": [
+        "汛期"
+      ],
+      "pred_head": "根据资料[1]，“七不得”提醒告诫是为了保障洪涝地区重要民生商品和服务市场价格基本稳定，维护汛期市场"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc08ab#0",
+      "refusal": false,
+      "hit": true,
+      "question": "贾斯廷·特鲁多和索菲·特鲁多结婚多久了？",
+      "gold": [
+        "18年"
+      ],
+      "pred_head": "根据资料[1]，贾斯廷·特鲁多和索菲·特鲁多结婚18年后宣布分居，因此他们结婚时长为18年[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc08ab#1",
+      "refusal": false,
+      "hit": true,
+      "question": "贾斯廷·特鲁多和索菲·特鲁多宣布分居了吗？",
+      "gold": [
+        "是的"
+      ],
+      "pred_head": "是的，贾斯廷·特鲁多和索菲·特鲁多宣布分居了。根据资料，加拿大总理贾斯廷·特鲁多于2023年8月2日"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc08ab#2",
+      "refusal": false,
+      "hit": false,
+      "question": "他们宣布分居的时间是什么时候？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，加拿大总理贾斯廷·特鲁多与妻子索菲·特鲁多于2023年8月2日宣布正式分居[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b30b82641eb8ecc029a#0",
+      "refusal": false,
+      "hit": false,
+      "question": "谁参与了成都东门市井文化体验街区的非遗技艺体验和互动？",
+      "gold": [
+        "laquintanasonia和zigopavel"
+      ],
+      "pred_head": "根据资料[1]，参与成都东门市井文化体验街区非遗技艺体验和互动的人员包括：意大利队游泳运动员LAQU"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c41#0",
+      "refusal": false,
+      "hit": true,
+      "question": "惠誉将美国的长期外币发行人违约评级从什么下调至什么？",
+      "gold": [
+        "aaa下调至aa"
+      ],
+      "pred_head": "根据资料[1]，惠誉将美国长期外币发行人违约评级从AAA下调至AA+[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b31b82641eb8ecc0661#0",
+      "refusal": false,
+      "hit": true,
+      "question": "加拿大不列颠哥伦比亚省自年初以来发生了多少起野火？",
+      "gold": [
+        "超过1200起"
+      ],
+      "pred_head": "根据资料[1]，加拿大不列颠哥伦比亚省自今年4月1日野火季开始以来，已发生超过1200起野火[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b31b82641eb8ecc0661#1",
+      "refusal": false,
+      "hit": true,
+      "question": "目前还有多少处野火在燃烧？",
+      "gold": [
+        "近400处"
+      ],
+      "pred_head": "根据资料[1]，目前加拿大不列颠哥伦比亚省有近400处在燃野火，其中约半数处于失控状态[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfb14#0",
+      "refusal": false,
+      "hit": true,
+      "question": "从哪一年开始每年每所“双一流”建设高校将通过推免遴选方式选拔优秀理工科应届本科毕业生攻读研究生？",
+      "gold": [
+        "2023年"
+      ],
+      "pred_head": "根据资料[1]，“从2023年起，国家支持‘双一流’建设高校为代表的高水平高校选拔专业成绩优秀且乐教"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfb14#1",
+      "refusal": false,
+      "hit": false,
+      "question": "每年每所“双一流”建设高校将通过什么方式选拔优秀理工科应届本科毕业生攻读研究生？",
+      "gold": [
+        "推免遴选方式"
+      ],
+      "pred_head": "根据资料[1]，“国优计划”首批试点支持30所“双一流”建设高校承担培养任务，每年每校通过推免遴选不"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfb14#2",
+      "refusal": false,
+      "hit": true,
+      "question": "每所“双一流”建设高校将选拔多少名优秀理工科应届本科毕业生攻读研究生？",
+      "gold": [
+        "不少于30名"
+      ],
+      "pred_head": "根据资料[1]，“国优计划”首批试点支持30所“双一流”建设高校承担培养任务，每年每校通过推免遴选不"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c7f#0",
+      "refusal": false,
+      "hit": true,
+      "question": "美国政府官员表示正在考虑派遣哪些人员随船护送商船？",
+      "gold": [
+        "海军陆战队员和海军士兵"
+      ],
+      "pred_head": "根据资料[1]，美国政府官员表示正考虑派遣海军陆战队员和海军士兵随船护送穿越霍尔木兹海峡的油轮等商船"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c7f#1",
+      "refusal": false,
+      "hit": true,
+      "question": "美国考虑派遣海军陆战队员和海军士兵随船护送商船的目的是什么？",
+      "gold": [
+        "威慑伊朗"
+      ],
+      "pred_head": "根据资料[1]，美国考虑派遣海军陆战队员和海军士兵随船护送穿越霍尔木兹海峡的油轮等商船，目的是为了威"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c7f#2",
+      "refusal": true,
+      "hit": false,
+      "question": "霍尔木兹海峡位于哪个国家？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c7f#3",
+      "refusal": false,
+      "hit": true,
+      "question": "美国考虑派遣海军陆战队员和海军士兵随船护送商船的目的是为了威慑哪个国家？",
+      "gold": [
+        "伊朗"
+      ],
+      "pred_head": "根据资料[1]，美国考虑派遣海军陆战队员和海军士兵随船护送穿越霍尔木兹海峡的商船，目的是为了威慑伊朗"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecc00e8#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁正在调查哈佛大学的招生过程中是否存在种族歧视？",
+      "gold": [
+        "美国教育部民权办公室"
+      ],
+      "pred_head": "根据资料[1]，美国教育部民权办公室正在调查哈佛大学在招生过程中是否存在种族歧视[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecc00e8#1",
+      "refusal": false,
+      "hit": true,
+      "question": "哈佛大学的招生过程中是否存在偏袒与捐赠人、校友有关系的申请人？",
+      "gold": [
+        "是"
+      ],
+      "pred_head": "根据资料[1]，美国教育部民权办公室正在调查哈佛大学在招生过程中是否存在种族歧视，偏袒与捐赠人、校友"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecc00e8#2",
+      "refusal": false,
+      "hit": false,
+      "question": "偏袒行为主要涉及哪类申请人？",
+      "gold": [
+        "白人申请人"
+      ],
+      "pred_head": "根据资料[1]，哈佛大学在招生过程中被指控偏袒与捐赠人、校友有关系的申请人，即“传承录取”申请者，其"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b33b82641eb8ecc14b4#0",
+      "refusal": false,
+      "hit": true,
+      "question": "2023世界机器人大会将在哪里举办？",
+      "gold": [
+        "北京经济技术开发区亦创国际会展中心"
+      ],
+      "pred_head": "根据资料[1]，2023世界机器人大会将在北京经济技术开发区亦创国际会展中心举办[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b33b82641eb8ecc14b4#1",
+      "refusal": false,
+      "hit": true,
+      "question": "有多少家国内外机器人企业参展？",
+      "gold": [
+        "140余家"
+      ],
+      "pred_head": "根据资料[1]，共有140余家国内外机器人企业携近600件展品亮相展会，其中40家企业首次参展[1]"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b30b82641eb8ecc02e3#0",
+      "refusal": false,
+      "hit": false,
+      "question": "川岛秀一反对日本政府将核污染水排入大海的原因是什么？",
+      "gold": [
+        "使福岛渔业的恢复努力化为泡影"
+      ],
+      "pred_head": "根据资料[1]，川岛秀一反对日本政府将核污染水排入大海的原因包括：他认为排海会使当地稍有起色的渔业回"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b30b82641eb8ecc02e3#1",
+      "refusal": false,
+      "hit": false,
+      "question": "川岛秀一提到了什么对福岛渔业恢复的担忧？",
+      "gold": [
+        "担心渔业后继无人"
+      ],
+      "pred_head": "根据资料[1]，川岛秀一提到，日本政府强推核污染水排海会使当地稍有起色的渔业回归沉寂，渔民们对继承渔"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b30b82641eb8ecc02e3#2",
+      "refusal": false,
+      "hit": true,
+      "question": "川岛秀一提到了什么历史经历？",
+      "gold": [
+        "鱼类被污染的经历"
+      ],
+      "pred_head": "根据资料[1]，川岛秀一提到“历史上鱼类被污染的经历”，并指出“现在却不去反省这些事情，不回顾历史，"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b30b82641eb8ecc02e3#3",
+      "refusal": true,
+      "hit": false,
+      "question": "川岛秀一认为政府应该做什么？",
+      "gold": [
+        "反省和回顾历史"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c34#0",
+      "refusal": false,
+      "hit": false,
+      "question": "阿卜杜拉赫曼·奇亚尼是谁？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，阿卜杜拉赫曼·奇亚尼是尼日尔政变军人领导人，于2023年7月28日宣布就任尼日尔保卫"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc0c34#1",
+      "refusal": false,
+      "hit": false,
+      "question": "尼日尔保卫祖国国家委员会是做什么的？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，尼日尔保卫祖国国家委员会是由政变军人代表于2023年7月26日深夜宣布成立的机构，旨"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc1624#0",
+      "refusal": true,
+      "hit": false,
+      "question": "广西北海队以多少比分战胜了中国香港队？",
+      "gold": [
+        "49分"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc1624#1",
+      "refusal": true,
+      "hit": false,
+      "question": "广西北海队与中国香港队的比分差多少？",
+      "gold": [
+        "中国香港队"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc1624#2",
+      "refusal": true,
+      "hit": false,
+      "question": "广西北海队战胜了哪支队伍？",
+      "gold": [
+        "广西北海队"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc1624#3",
+      "refusal": true,
+      "hit": false,
+      "question": "中国香港队输给了哪支队伍？",
+      "gold": [
+        "523"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf920#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁在企业座谈会上强调了继续巩固房地产市场企稳回升态势？",
+      "gold": [
+        "倪虹"
+      ],
+      "pred_head": "根据资料[1]，住房城乡建设部部长倪虹在企业座谈会上强调了继续巩固房地产市场企稳回升态势[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf920#1",
+      "refusal": false,
+      "hit": true,
+      "question": "倪虹强调了支持哪两种住房需求？",
+      "gold": [
+        "刚性和改善性住房需求"
+      ],
+      "pred_head": "根据资料[1]，倪虹强调要“大力支持刚性和改善性住房需求”[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf920#2",
+      "refusal": false,
+      "hit": true,
+      "question": "哪些政策措施被提到了？",
+      "gold": [
+        "降低购买首套住房首付比例和贷款利率改善性住房换购税费减免个人住房贷款认房不用认贷"
+      ],
+      "pred_head": "根据提供的资料，提到的政策措施包括：\n\n1. 降低购买首套住房首付比例和贷款利率、改善性住房换购税费"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf920#3",
+      "refusal": false,
+      "hit": true,
+      "question": "要加快什么工作？",
+      "gold": [
+        "项目建设交付"
+      ],
+      "pred_head": "要加快的工作是“保交楼”工作，加快项目建设交付，切实保障人民群众的合法权益[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf920#4",
+      "refusal": false,
+      "hit": false,
+      "question": "保障谁的合法权益？",
+      "gold": [
+        "人民群众的合法权益"
+      ],
+      "pred_head": "根据提供的资料，保障的合法权益包括：\n\n1. 消费者的合法权益：市场监管总局公告中要求经营者不得串通"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b27b82641eb8ecbe2f7#0",
+      "refusal": false,
+      "hit": true,
+      "question": "河北省农林科学院建议密切关注什么？",
+      "gold": [
+        "田间病虫草害发生趋势"
+      ],
+      "pred_head": "根据资料[1]，河北省农林科学院建议密切关注田间病虫草害发生趋势，及时采取“一喷多防”技术措施防控病"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b27b82641eb8ecbe2f7#1",
+      "refusal": false,
+      "hit": true,
+      "question": "应采取什么技术措施防控病虫草害？",
+      "gold": [
+        "一喷多防技术措施"
+      ],
+      "pred_head": "根据资料，防控病虫草害的技术措施包括：对玉米应密切关注田间病虫草害发生趋势，及时采取“一喷多防”技术"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#0",
+      "refusal": false,
+      "hit": false,
+      "question": "湘江欢乐城是什么活动？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，湘江欢乐城举办了开业三周年庆典活动，包括音乐演出、烟花秀、水上乐园和滑雪场体验等[1"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#1",
+      "refusal": false,
+      "hit": true,
+      "question": "湘江欢乐城的开业庆典是在什么时候举行的？",
+      "gold": [
+        "三周年庆典"
+      ],
+      "pred_head": "根据资料[1]，湘江欢乐城开业三周年庆典于2023年7月22日举行[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#2",
+      "refusal": false,
+      "hit": false,
+      "question": "湘江欢乐城的庆典邀请了哪些嘉宾？",
+      "gold": [
+        "于意yee西奥sio和谐里乐队"
+      ],
+      "pred_head": "根据资料[1]，湘江欢乐城开业三周年庆典邀请了以下嘉宾：中国说唱巅峰对决2023嘉宾于意YEE、西奥"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#3",
+      "refusal": false,
+      "hit": false,
+      "question": "中国说唱巅峰对决2023是什么活动？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据提供的资料，中国说唱巅峰对决2023是一档音乐节目，其嘉宾于意YEE、西奥SIO等参与了湘江欢乐"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#4",
+      "refusal": false,
+      "hit": false,
+      "question": "嘉宾于意YEE是什么身份？",
+      "gold": [
+        "说唱歌手"
+      ],
+      "pred_head": "根据资料[1]，嘉宾于意YEE是中国说唱巅峰对决2023嘉宾，在湘江欢乐城开业三周年庆典上进行了表演"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#5",
+      "refusal": false,
+      "hit": false,
+      "question": "嘉宾西奥SIO是什么身份？",
+      "gold": [
+        "说唱歌手"
+      ],
+      "pred_head": "根据资料[1]，西奥SIO是中国说唱巅峰对决2023嘉宾，在湘江欢乐城开业三周年庆典上进行了现场表演"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b34b82641eb8ecc164c#6",
+      "refusal": false,
+      "hit": false,
+      "question": "和谐里乐队是什么类型的乐队？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，和谐里乐队在湘江欢乐城开业三周年庆典上演唱了多首脍炙人口的民谣流行歌曲，因此和谐里乐"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2cb82641eb8ecbef2b#0",
+      "refusal": false,
+      "hit": true,
+      "question": "武汉轨道交通12号线青菱站至罗家村站区间右线的盾构区间由哪两个集团投资建设？",
+      "gold": [
+        "武汉地铁集团中铁开投集团"
+      ],
+      "pred_head": "根据资料[1]，武汉轨道交通12号线青菱站至罗家村站区间右线由武汉地铁集团、中铁开投集团参与投资建设"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2cb82641eb8ecbef2b#1",
+      "refusal": false,
+      "hit": true,
+      "question": "该区间的全长是多少米？",
+      "gold": [
+        "874米"
+      ],
+      "pred_head": "根据资料[1]，青菱站至罗家村站区间右线全长874米[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbd5#0",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年前7个月中国货物贸易进出口总值是多少？",
+      "gold": [
+        "2355万亿元"
+      ],
+      "pred_head": "根据资料[1]，2023年前7个月我国货物贸易进出口总值为23.55万亿元，同比增长0.4%[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbd5#1",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年前7个月中国货物贸易进出口总值同比增长了多少？",
+      "gold": [
+        "04"
+      ],
+      "pred_head": "根据资料[1]，2023年前7个月中国货物贸易进出口总值为23.55万亿元，同比增长0.4%[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf95f#0",
+      "refusal": false,
+      "hit": true,
+      "question": "滴滴出行被要求清退多少辆不合规车辆？",
+      "gold": [
+        "3517辆"
+      ],
+      "pred_head": "根据资料[1]，滴滴出行被要求立即清退被通报的3517辆不合规车辆[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2db82641eb8ecbf95f#1",
+      "refusal": false,
+      "hit": true,
+      "question": "高德打车聚合平台被要求督促合作平台清退多少辆不合规车辆？",
+      "gold": [
+        "40辆"
+      ],
+      "pred_head": "根据资料[1]，高德打车聚合平台被要求督促其合作平台立即清退被通报的40辆不合规车辆[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2bb82641eb8ecbeb82#0",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年上半年中国船舶工业的新接订单量是多少？",
+      "gold": [
+        "3767万载重吨"
+      ],
+      "pred_head": "根据资料[1]，2023年上半年，中国船舶工业的新接订单量为3767万载重吨，同比增长67.7%[1"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2bb82641eb8ecbeb82#1",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年上半年中国船舶工业的新接订单量同比增长了多少？",
+      "gold": [
+        "677"
+      ],
+      "pred_head": "根据资料[1]，2023年上半年中国船舶工业的新接订单量同比增长了67.7%[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfdce#0",
+      "refusal": false,
+      "hit": true,
+      "question": "龙贸通是由谁开发建设的？",
+      "gold": [
+        "黑龙江省交通投资集团有限公司"
+      ],
+      "pred_head": "根据资料[1]，“龙贸通”中俄国际物贸综合服务平台是由黑龙江省交通投资集团有限公司依托权属二级企业龙"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfdce#1",
+      "refusal": false,
+      "hit": false,
+      "question": "中俄国际物贸综合服务平台是什么？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料，“龙贸通”中俄国际物贸综合服务平台是黑龙江省交通投资集团有限公司依托权属二级企业龙江交投国"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfdce#2",
+      "refusal": false,
+      "hit": true,
+      "question": "上线试运行是在什么时间启动的？",
+      "gold": [
+        "2023年7月30日"
+      ],
+      "pred_head": "根据资料[1]，“龙贸通”中俄国际物贸综合服务平台于2023年7月30日正式上线试运行[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b28b82641eb8ecbe934#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁被禁止播放录音？",
+      "gold": [
+        "李某萍"
+      ],
+      "pred_head": "根据资料[1]，被禁止播放录音的是李某萍等人。广州市海珠区人民法院裁定被申请人李某萍等自裁定生效之日"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b28b82641eb8ecbe934#1",
+      "refusal": true,
+      "hit": false,
+      "question": "录音的名称是什么？",
+      "gold": [
+        "荒山野鬼"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc09fc#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁组织了罢工？",
+      "gold": [
+        "服务业雇员国际工会第172地方分会seiulocal721"
+      ],
+      "pred_head": "根据资料[1]，罢工是由工会组织“服务业雇员国际工会第172地方分会(SEIU Local 721)"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc09fc#1",
+      "refusal": false,
+      "hit": true,
+      "question": "罢工预计持续多久？",
+      "gold": [
+        "24小时"
+      ],
+      "pred_head": "根据资料[1]，超过1.1万名洛杉矶城市工人计划在当地时间8日举行大规模罢工，预计将持续24小时[1"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecbff5f#0",
+      "refusal": false,
+      "hit": false,
+      "question": "在哪个城市的电影院抓获了涉诈嫌疑人何某？",
+      "gold": [
+        "六盘水市"
+      ],
+      "pred_head": "根据资料[1]，涉诈嫌疑人何某是在湖北省十堰市的电影院被抓获的[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecbff5f#1",
+      "refusal": false,
+      "hit": true,
+      "question": "是哪个公安局的民警抓获了涉诈嫌疑人何某？",
+      "gold": [
+        "湖北十堰市公安局茅箭区分局"
+      ],
+      "pred_head": "根据资料[1]，抓获涉诈嫌疑人何某的是湖北十堰市公安局茅箭区分局民警[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecbff5f#2",
+      "refusal": false,
+      "hit": false,
+      "question": "在哪个省份的城市抓获了涉诈嫌疑人何某？",
+      "gold": [
+        "贵州省"
+      ],
+      "pred_head": "根据资料[1]，涉诈嫌疑人何某是在湖北省十堰市被抓获的[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2fb82641eb8ecbff5f#3",
+      "refusal": false,
+      "hit": true,
+      "question": "涉诈嫌疑人何某是在什么地方被抓获的？",
+      "gold": [
+        "电影院"
+      ],
+      "pred_head": "根据资料[1]，涉诈嫌疑人何某是在电影院里观看反诈电影《孤注一掷》时被警方抓获的。具体地点为电影院内"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf3ea#0",
+      "refusal": false,
+      "hit": true,
+      "question": "纪念中日和平友好条约缔结了多少周年？",
+      "gold": [
+        "45周年"
+      ],
+      "pred_head": "纪念中日和平友好条约缔结45周年[1][2]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf3ea#1",
+      "refusal": false,
+      "hit": true,
+      "question": "中国驻日大使强调了哪些核心原则？",
+      "gold": [
+        "互不干涉内政使用和平手段解决一切争端共同反对任何国家谋求霸权"
+      ],
+      "pred_head": "根据资料，中国驻日大使吴江浩强调了中日和平友好条约规定的一系列核心原则，包括：中日互不干涉内政、使用"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf3ea#2",
+      "refusal": false,
+      "hit": false,
+      "question": "中国驻日大使对日本国内的哪些行为表示了担忧？",
+      "gold": [
+        "渲染中国威胁煽动台海有事以及有人扬言要强化威慑力立足于战的言论"
+      ],
+      "pred_head": "根据资料[2]，中国驻日大使吴江浩对日本国内一些人忘却历史教训、渲染“中国威胁”、煽动“台海有事”以"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#0",
+      "refusal": false,
+      "hit": true,
+      "question": "四平市委组宣部要加强什么？",
+      "gold": [
+        "宣讲宣传力量的统筹协同"
+      ],
+      "pred_head": "根据资料[1]，四平市委组宣部要加强各级各类宣讲宣传力量的统筹协同，深入基层一线持续开展面对面、互动"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#1",
+      "refusal": false,
+      "hit": true,
+      "question": "团中央示范宣讲团走进了哪个省份？",
+      "gold": [
+        "山西"
+      ],
+      "pred_head": "根据资料[1]，团中央“青春心向党 奋进新征程”示范宣讲团走进了山西，在太原、晋城等地开展主题宣讲["
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#2",
+      "refusal": false,
+      "hit": false,
+      "question": "团中央示范宣讲团在太原和晋城做了什么？",
+      "gold": [
+        "面对面交流互动开展主题宣讲"
+      ],
+      "pred_head": "根据资料[1]，团中央“青春心向党 奋进新征程”示范宣讲团于7月26日至27日走进山西，在太原、晋城"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#3",
+      "refusal": false,
+      "hit": false,
+      "question": "有多少团员青年和团干部代表参加了活动？",
+      "gold": [
+        "800余人"
+      ],
+      "pred_head": "根据资料[1]，共有800余名团员青年、团干部代表参加了活动[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc119c#0",
+      "refusal": false,
+      "hit": true,
+      "question": "德国财长林德纳赞成向乌克兰提供什么导弹？",
+      "gold": [
+        "金牛座巡航导弹"
+      ],
+      "pred_head": "根据资料[1]，德国财长林德纳赞成德国政府向乌克兰援助“金牛座”巡航导弹[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc119c#1",
+      "refusal": false,
+      "hit": true,
+      "question": "德国政府与谁合作对巡航导弹进行软件修改？",
+      "gold": [
+        "mbda"
+      ],
+      "pred_head": "根据资料[1]，德国政府正与MBDA（欧洲导弹集团）合作，对德国国防军拥有的“金牛座”巡航导弹进行软"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc119c#2",
+      "refusal": false,
+      "hit": true,
+      "question": "修改后的导弹确保乌克兰军队不会攻击哪个国家的领土？",
+      "gold": [
+        "俄罗斯领土"
+      ],
+      "pred_head": "根据资料[1]，修改后的“金牛座”巡航导弹确保乌克兰军队不会用其攻击俄罗斯领土，但这里所说的俄罗斯领"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc119c#3",
+      "refusal": false,
+      "hit": false,
+      "question": "乌克兰领土中有哪些地区被俄军占领？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据提供的资料，[1]中提到“俄罗斯军队占领的乌克兰领土”，但未具体列出哪些地区被占领。资料中仅提及"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc0464#0",
+      "refusal": false,
+      "hit": false,
+      "question": "夏令营在哪个城市举办？",
+      "gold": [
+        "山东枣庄市"
+      ],
+      "pred_head": "根据提供的资料，无法确定夏令营的具体举办城市。资料[1]提到2023年“中国寻根之旅”夏令营在暨南大"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc0464#1",
+      "refusal": false,
+      "hit": false,
+      "question": "夏令营提供了什么机会给海外华裔青少年？",
+      "gold": [
+        "参观考察当地的文化景点接受当地政府的欢迎并被邀请参与更多的文化交流活动"
+      ],
+      "pred_head": "根据资料，夏令营为海外华裔青少年提供了零距离感受广东社会生活和祖籍国发展变化的机会，并满足他们对中华"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc0464#2",
+      "refusal": false,
+      "hit": false,
+      "question": "夏令营通过什么方式让海外华裔青少年了解中国的发展和中华文化？",
+      "gold": [
+        "通过网络营"
+      ],
+      "pred_head": "根据资料，夏令营通过让海外华裔青少年零距离感受广东社会生活的方方面面，以及了解祖籍国的发展变化，来帮"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc0464#3",
+      "refusal": false,
+      "hit": true,
+      "question": "夏令营鼓励海外华裔青少年成为什么？",
+      "gold": [
+        "中华文化的积极传播者"
+      ],
+      "pred_head": "根据资料[1]，夏令营鼓励海外华裔青少年成为中华文化的积极传播者，发扬祖辈“爱国、爱乡、爱自己的家人"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc05d9#0",
+      "refusal": false,
+      "hit": false,
+      "question": "金边市第三环线项目的作用是什么？",
+      "gold": [
+        "缓解交通压力"
+      ],
+      "pred_head": "根据资料，金边市第三环线项目的作用包括：将金边市区北部的4号国家公路与南部的1号国家公路直接相连，并"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc05d9#1",
+      "refusal": false,
+      "hit": false,
+      "question": "金边市第三环线项目对周边发展有何帮助？",
+      "gold": [
+        "有助于周边的发展"
+      ],
+      "pred_head": "根据资料[1]和[2]，金边市第三环线项目对周边发展有以下帮助：  \n- 为老百姓提供很大便利，特别"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc05d9#2",
+      "refusal": false,
+      "hit": false,
+      "question": "金边市第三环线项目对沿线各区经济发展有何影响？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料，金边市第三环线项目对沿线各区经济发展具有重要带动作用。该项目形成金边市西南部的快速通道，对"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc05d9#3",
+      "refusal": false,
+      "hit": false,
+      "question": "金边市第三环线项目对柬埔寨首都的城市形象有何意义？",
+      "gold": [
+        "提升城市形象"
+      ],
+      "pred_head": "根据资料[1]，金边市第三环线项目对柬埔寨首都的城市形象具有重要意义，具体体现在：该项目贯穿金边市西"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc05d9#4",
+      "refusal": false,
+      "hit": false,
+      "question": "在该项目的启用仪式上，有哪些人出席了仪式？",
+      "gold": [
+        "柬埔寨首相洪森和中国驻柬埔寨大使王文天等两国代表"
+      ],
+      "pred_head": "根据提供的资料，柬埔寨金边市第三环线项目的启用仪式上，出席的人员包括：柬埔寨首相洪森、中国驻柬埔寨大"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2eb82641eb8ecbfc24#0",
+      "refusal": false,
+      "hit": true,
+      "question": "四川省彭州市通过什么方式实现了产地直采和一级批发？",
+      "gold": [
+        "集采共配模式"
+      ],
+      "pred_head": "根据资料[1]，四川省彭州市通过集采共配模式实现了产地直采和“一级批发”直采。该模式由门店零售商通过"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2eb82641eb8ecbfc24#1",
+      "refusal": false,
+      "hit": false,
+      "question": "四川省彭州市推动了什么的拓宽和扩大？",
+      "gold": [
+        "农产品上行渠道和农村电商覆盖面"
+      ],
+      "pred_head": "根据资料[1]，四川省彭州市推动了农产品上行渠道的拓宽和农村电商覆盖面的扩大。具体措施包括建立农产品"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2eb82641eb8ecbfc24#2",
+      "refusal": false,
+      "hit": true,
+      "question": "湖南省召开了什么会议？",
+      "gold": [
+        "全省落实耕地保护和粮食安全责任制考核暨粮食购销领域监管信息化工作推进会"
+      ],
+      "pred_head": "根据资料[1]，湖南省粮食和物资储备局于2023年8月4日召开了全省落实耕地保护和粮食安全责任制考核"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2eb82641eb8ecbfc24#3",
+      "refusal": false,
+      "hit": true,
+      "question": "湖南省确保了什么的全覆盖？",
+      "gold": [
+        "地方政策性粮食监管信息化"
+      ],
+      "pred_head": "根据资料[1]，湖南省确保在9月底前实现全省地方政策性粮食监管信息化的全覆盖[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2eb82641eb8ecbfc24#4",
+      "refusal": false,
+      "hit": false,
+      "question": "湖南省部署了什么的建设运维及应用情况？",
+      "gold": [
+        "粮食安全责任制考核和粮食购销监管信息化"
+      ],
+      "pred_head": "根据资料[1]，湖南省部署了全省粮食购销监管信息化建设运维及应用情况，并安排了下一步工作任务[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b32b82641eb8ecc0903#0",
+      "refusal": false,
+      "hit": false,
+      "question": "哈萨克斯坦国防部是否否认向俄罗斯输送军事装备的传言？",
+      "gold": [
+        "是"
+      ],
+      "pred_head": "根据资料[1]，哈萨克斯坦国防部发表声明称，有关哈萨克斯坦向俄罗斯运送军事装备的消息与事实不符，这些"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b32b82641eb8ecc0903#1",
+      "refusal": true,
+      "hit": false,
+      "question": "这些装备属于哪个国家？",
+      "gold": [
+        "第三国"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b32b82641eb8ecc0903#2",
+      "refusal": true,
+      "hit": false,
+      "question": "装备是通过什么途径运往俄罗斯的？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b32b82641eb8ecc0903#3",
+      "refusal": false,
+      "hit": true,
+      "question": "俄罗斯在哪个论坛上展示了军事装备？",
+      "gold": [
+        "军队2023国际军事技术论坛"
+      ],
+      "pred_head": "根据资料[1]，俄罗斯在“军队-2023”国际军事技术论坛上展示了军事装备，该论坛由俄罗斯国防部主办"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b32b82641eb8ecc0903#4",
+      "refusal": false,
+      "hit": false,
+      "question": "俄罗斯计划签订什么样的合同？",
+      "gold": [
+        "大额合同"
+      ],
+      "pred_head": "根据资料[1]，俄罗斯国防部计划签订价值超过4330亿卢布的合同[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b32b82641eb8ecc0903#5",
+      "refusal": false,
+      "hit": false,
+      "question": "俄罗斯在哪个方面保持积极态势？",
+      "gold": [
+        "国际军事和技术合作方面"
+      ],
+      "pred_head": "根据提供的资料，俄罗斯在军事技术合作方面保持积极态势。资料[1]中提到，俄罗斯总统普京表示，俄罗斯决"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc0437#0",
+      "refusal": false,
+      "hit": true,
+      "question": "毛伊岛野火造成的损失有多少？",
+      "gold": [
+        "接近60亿美元"
+      ],
+      "pred_head": "根据资料，毛伊岛野火造成的损失接近60亿美元[1]，修复资金预计需要55.2亿美元[2]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc0437#1",
+      "refusal": true,
+      "hit": false,
+      "question": "有多少人住在避难所中？",
+      "gold": [
+        "1418人"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc0437#2",
+      "refusal": false,
+      "hit": true,
+      "question": "受灾地区的电力和通信服务是否已恢复？",
+      "gold": [
+        "部分恢复"
+      ],
+      "pred_head": "根据资料[1]，截至8月11日，毛伊岛西部受灾地区电力和通信服务已小部分恢复，但基础设施全面修复尚需"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc0437#3",
+      "refusal": true,
+      "hit": false,
+      "question": "基础设施修复需要多长时间？",
+      "gold": [
+        "尚需时日"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc07e5#0",
+      "refusal": false,
+      "hit": false,
+      "question": "通过什么方式强化了监测预警和会商研判？",
+      "gold": [
+        "视频调度会"
+      ],
+      "pred_head": "根据资料[1]，通过加强监测预警和滚动会商研判，重点做好雷电高发时段和多发地区实时监控，以此强化监测"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc07e5#1",
+      "refusal": false,
+      "hit": true,
+      "question": "强调了什么总要求？",
+      "gold": [
+        "早发现快处置保安全"
+      ],
+      "pred_head": "根据提供的资料，强调了“早发现、快处置、保安全”的总要求[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc07e5#2",
+      "refusal": false,
+      "hit": true,
+      "question": "公安机关加大了什么投入？",
+      "gold": [
+        "警力投入"
+      ],
+      "pred_head": "根据资料[1]，公安机关正加大警力投入，对紧急避险点、群众安置点、物资存发点、医疗救护点等重点区域加"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc07e5#3",
+      "refusal": false,
+      "hit": true,
+      "question": "对什么加强了秩序引导？",
+      "gold": [
+        "重点区域"
+      ],
+      "pred_head": "根据资料[1]，各地公安机关对紧急避险点、群众安置点、物资存发点、医疗救护点等重点区域加强了秩序引导"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc07e5#4",
+      "refusal": false,
+      "hit": false,
+      "question": "打击了什么违法犯罪行为？",
+      "gold": [
+        "趁灾盗窃抢劫等违法犯罪行为"
+      ],
+      "pred_head": "根据提供的资料，涉及打击的违法犯罪行为包括：\n\n1. 电信网络诈骗及相关洗钱行为：涉诈嫌疑人何某明知"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b31b82641eb8ecc07e5#5",
+      "refusal": false,
+      "hit": false,
+      "question": "为了维护什么稳定而采取了措施？",
+      "gold": [
+        "社会安全稳定"
+      ],
+      "pred_head": "为了维护洪涝地区重要民生商品和服务市场价格基本稳定，并制止哄抬价格等价格违法行为，市场监管总局发布了"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc02be#0",
+      "refusal": false,
+      "hit": true,
+      "question": "中巴两国在哪个领域有合作成果？",
+      "gold": [
+        "文化旅游"
+      ],
+      "pred_head": "根据资料，中巴两国在文化和旅游领域有合作成果，双方文化旅游合作不断走深走实[1]。此外，中巴关系也涉"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc02be#1",
+      "refusal": false,
+      "hit": true,
+      "question": "在两国建交50周年之际，中巴期待进一步深化哪方面的合作？",
+      "gold": [
+        "交流合作"
+      ],
+      "pred_head": "根据资料[1]，在中巴建交50周年之际，双方期待进一步深化文化和旅游领域的交流合作，包括旅游推介和人"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc02be#2",
+      "refusal": false,
+      "hit": false,
+      "question": "通过哪些活动，侨胞和巴西各界朋友为促进两国人民之间的友谊和合作做出了积极贡献？",
+      "gold": [
+        "推动设立圣保罗市中国移民日等活动"
+      ],
+      "pred_head": "根据提供的资料，侨胞和巴西各界朋友通过以下活动为促进两国人民之间的友谊和合作做出了积极贡献：\n\n- "
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b30b82641eb8ecc02be#3",
+      "refusal": false,
+      "hit": false,
+      "question": "这些努力有助于推动中巴关系在什么时期的发展？",
+      "gold": [
+        "新时期"
+      ],
+      "pred_head": "根据资料[1]，中巴关系正处在“继往开来的重要历史节点”，且今年是中巴建立战略伙伴关系30周年，明年"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2cb82641eb8ecbef80#0",
+      "refusal": false,
+      "hit": false,
+      "question": "湖北省在水利建设和管理方面采取了哪些综合措施？",
+      "gold": [
+        "通过荆楚安澜现代水网建设河湖长制和幸福河湖共同缔造行动"
+      ],
+      "pred_head": "根据提供的资料，湖北省在水利建设和管理方面采取了以下综合措施：\n\n- 推进“荆楚安澜”现代水网建设，"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2cb82641eb8ecbef80#1",
+      "refusal": false,
+      "hit": false,
+      "question": "湖北省通过什么方式进行防洪排涝、水资源配置和水生态保护？",
+      "gold": [
+        "通过荆楚安澜现代水网建设"
+      ],
+      "pred_head": "根据资料[1]，湖北省通过推进“荆楚安澜”现代水网建设，统筹抓好防洪与排涝、水资源节约与利用、江河湖"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2cb82641eb8ecbef80#2",
+      "refusal": false,
+      "hit": false,
+      "question": "湖北省在市州层面制定了什么规划？",
+      "gold": [
+        "市州水网规划"
+      ],
+      "pred_head": "根据资料[1]，湖北省将推进“荆楚安澜”现代水网建设，并指导督促市县加快水网规划编制，市州层面需制定"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2cb82641eb8ecbef80#3",
+      "refusal": false,
+      "hit": false,
+      "question": "房县和十堰市通过什么行动来提升河湖的水质和生态环境？",
+      "gold": [
+        "河湖长制和幸福河湖共同缔造行动"
+      ],
+      "pred_head": "根据资料[1]，房县通过县乡村三级河长积极履职，并由30多名河道管理员和20多名工作人员组成志愿者团"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2cb82641eb8ecbef80#4",
+      "refusal": true,
+      "hit": false,
+      "question": "湖北省在县级层面开展了哪些工作来增强水旱灾害防御能力？",
+      "gold": [
+        "河湖日常管护水质监测以及河流整治和提升"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2cb82641eb8ecbef80#5",
+      "refusal": false,
+      "hit": false,
+      "question": "湖北省的综合措施旨在提高什么的满意度？",
+      "gold": [
+        "公众满意度"
+      ],
+      "pred_head": "根据资料[1]，湖北省十堰市开展幸福河湖共同缔造试点建设，目标是实现河湖面貌全面改善、河湖水质全面提"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc1135#0",
+      "refusal": false,
+      "hit": true,
+      "question": "在哪个区进行了燃气安全隐患排查整治行动？",
+      "gold": [
+        "潍坊市寒亭区高里街道"
+      ],
+      "pred_head": "根据资料[1]，潍坊市寒亭区高里街道开展了燃气安全隐患大排查大整治行动[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc1135#1",
+      "refusal": false,
+      "hit": true,
+      "question": "是谁组成了专项督导组？",
+      "gold": [
+        "街村干部专家联合消防城管等部门"
+      ],
+      "pred_head": "根据资料[1]和[2]，专项督导组由街村干部、专家联合消防、城管等部门组成[1][2]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc1135#2",
+      "refusal": false,
+      "hit": false,
+      "question": "采取了什么措施？",
+      "gold": [
+        "边查边改挂号销账"
+      ],
+      "pred_head": "根据提供的资料，采取了以下措施：\n\n1. 针对海河流域洪水防御，水利部要求重点分析研判永定河左堤和永"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b33b82641eb8ecc1135#3",
+      "refusal": true,
+      "hit": false,
+      "question": "在中国奶业大会上获得了什么荣誉？",
+      "gold": [
+        "现代化等级评价5a级的荣誉"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁表示应自觉规范减持行为？",
+      "gold": [
+        "证监会"
+      ],
+      "pred_head": "根据资料，上市公司大股东（即控股股东、持股5%以上股东）和董监高应自觉规范减持行为[1][2]。证监"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#1",
+      "refusal": false,
+      "hit": false,
+      "question": "在离婚分割股份时应遵守什么规定？",
+      "gold": [
+        "相关规定"
+      ],
+      "pred_head": "根据资料，上市公司大股东、董监高因离婚、法人（或非法人组织）终止、公司分立等形式分配股份的，各方应当"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#2",
+      "refusal": false,
+      "hit": true,
+      "question": "今年至少公告了几例股东离婚分割股份的案例？",
+      "gold": [
+        "8例"
+      ],
+      "pred_head": "根据资料[1]，据不完全统计，今年以来，上市公司至少公告股东离婚分割股份8例[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#3",
+      "refusal": false,
+      "hit": true,
+      "question": "有多少例涉及离婚后的计划或实际减持股份？",
+      "gold": [
+        "9例"
+      ],
+      "pred_head": "根据资料[1]，今年以来，上市公司至少公告股东离婚分割股份8例，离婚后计划或实际减持股份9例[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b34b82641eb8ecc1624#0",
+      "refusal": false,
+      "hit": true,
+      "question": "南宁队在手球比赛中以多少比分战胜了北海队？",
+      "gold": [
+        "44535"
+      ],
+      "pred_head": "根据资料[1]和[2]，南宁队以44.5:35战胜北海队，取得决赛阶段的“开门红”[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b34b82641eb8ecc1624#1",
+      "refusal": false,
+      "hit": true,
+      "question": "广东队在冰球比赛中通过谁的进球扳平了比分？",
+      "gold": [
+        "林绮琪"
+      ],
+      "pred_head": "根据资料[1]，广东队在冰球比赛中通过前锋林绮琪的进球扳平了比分[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b34b82641eb8ecc1624#2",
+      "refusal": true,
+      "hit": false,
+      "question": "最终广东队以多少比分战胜了北京队？",
+      "gold": [
+        "21"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf4b5#0",
+      "refusal": false,
+      "hit": true,
+      "question": "中国载人航天工程在哪些关键核心技术方面取得了重要突破？",
+      "gold": [
+        "智能芯片开源框架等"
+      ],
+      "pred_head": "根据提供的资料，中国载人航天工程在智能芯片、开源框架等关键核心技术方面取得了重要突破，同时智能芯片、"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf4b5#1",
+      "refusal": false,
+      "hit": true,
+      "question": "空间生命科学研究成果已经应用于哪些领域？",
+      "gold": [
+        "生物材料药物医疗和农业技术"
+      ],
+      "pred_head": "根据提供的资料，空间生命科学研究成果已直接应用于生物材料、药物、医疗和农业技术领域[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf4b5#2",
+      "refusal": false,
+      "hit": false,
+      "question": "航天育种实验取得了什么成果？",
+      "gold": [
+        "育成了多个主粮审定品种和新品种蔬菜水果林草花卉"
+      ],
+      "pred_head": "根据资料，航天育种搭载实验有3000余项，育成主粮审定品种240多个，蔬菜、水果、林草、花卉新品种4"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf4b5#3",
+      "refusal": false,
+      "hit": true,
+      "question": "这些成果创造了多少直接经济效益？",
+      "gold": [
+        "逾3600亿元"
+      ],
+      "pred_head": "根据资料，这些成果创造了直接经济效益逾3600亿元[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf4b5#4",
+      "refusal": false,
+      "hit": true,
+      "question": "年增产粮食约多少公斤？",
+      "gold": [
+        "约26亿公斤"
+      ],
+      "pred_head": "根据资料[1]和[2]，航天育种成果年增产粮食约26亿公斤[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf4b5#5",
+      "refusal": false,
+      "hit": true,
+      "question": "这些成果为未来的哪些任务积累了技术基础？",
+      "gold": [
+        "载人月球探测与深空探测任务"
+      ],
+      "pred_head": "根据资料[1]，部分项目成果为未来载人月球探测与深空探测任务积累了技术基础[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf6bf#0",
+      "refusal": false,
+      "hit": true,
+      "question": "长春市朝阳区新时代文明实践中心和志愿者协会在哪些地区发生了汛情？",
+      "gold": [
+        "榆树舒兰"
+      ],
+      "pred_head": "根据资料[1]，长春市朝阳区新时代文明实践中心发起号召并组织志愿服务，助力榆树、舒兰两地抗洪救灾[1"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf6bf#1",
+      "refusal": false,
+      "hit": true,
+      "question": "重庆松山医院通过什么活动提升公众的急救技能？",
+      "gold": [
+        "公益活动救在身边"
+      ],
+      "pred_head": "根据资料[1]，重庆松山医院通过公益活动“救”在身边，走进社会、走进企业，传播急救知识和口腔保健知识"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2db82641eb8ecbf6bf#2",
+      "refusal": false,
+      "hit": true,
+      "question": "重庆安全技术职业学院安全监督管理系的学生实践团在乡村开展了什么活动？",
+      "gold": [
+        "科普惠民便民活动"
+      ],
+      "pred_head": "根据资料[1]，重庆安全技术职业学院安全监督管理系的“援自你我，救在身边”乡村振兴实践团深入梁平区金"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc11db#0",
+      "refusal": false,
+      "hit": true,
+      "question": "叙利亚政府同意将巴卜塞拉姆和拉伊两个过境点的使用许可期限延长多久？",
+      "gold": [
+        "3个月"
+      ],
+      "pred_head": "根据资料[1]，叙利亚政府同意将联合国及其机构使用巴卜塞拉姆和拉伊两个过境点运送人道主义物资的许可期"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc11db#1",
+      "refusal": false,
+      "hit": true,
+      "question": "联合国安理会投票中的决议草案要求延长叙利亚跨境人道主义救援多久？",
+      "gold": [
+        "9个月"
+      ],
+      "pred_head": "根据资料[1]，由瑞士和巴西起草的决议草案要求延长叙利亚跨境人道主义救援9个月，而俄罗斯起草的决议草"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc11db#2",
+      "refusal": false,
+      "hit": true,
+      "question": "哪个国家反对并行使了否决权？",
+      "gold": [
+        "俄罗斯"
+      ],
+      "pred_head": "根据资料[1]，在联合国安理会就延长叙利亚跨境人道主义救援的投票中，俄罗斯反对了瑞士和巴西起草的决议"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc11db#3",
+      "refusal": false,
+      "hit": true,
+      "question": "目前仍在使用的最后一个跨境通道是哪个？",
+      "gold": [
+        "巴布哈瓦过境点babalhawa"
+      ],
+      "pred_head": "根据资料[1]，土耳其边境的巴布哈瓦过境点（Bab Al-Hawa）是目前仍可用于运输援助的最后一个"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc04bf#0",
+      "refusal": false,
+      "hit": false,
+      "question": "中国驻巴塞罗那总领馆建议游客在旅行途中保持什么样的形象？",
+      "gold": [
+        "低调形象"
+      ],
+      "pred_head": "根据资料[1]，中国驻巴塞罗那总领馆建议游客在旅行途中保持低调，不刻意穿着高档服装，不佩戴高档手表或"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc04bf#1",
+      "refusal": false,
+      "hit": true,
+      "question": "在购买名贵手表后应该保持什么样的警惕？",
+      "gold": [
+        "保持警惕"
+      ],
+      "pred_head": "根据资料[1]，在购买名贵手表后，应保持警惕，谨防犯罪团伙盯梢，出店后不要暴露所购手表并迅速离开[1"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc04bf#2",
+      "refusal": false,
+      "hit": false,
+      "question": "为什么要避免暴露所购手表？",
+      "gold": [
+        "避免被盯梢"
+      ],
+      "pred_head": "根据资料[1]，总领馆提醒游客进店购买名贵手表应保持警惕，谨防犯罪团伙盯梢，出店后不要暴露所购手表并"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc13d4#0",
+      "refusal": false,
+      "hit": false,
+      "question": "《氢能产业标准体系建设指南（2023版）》是由哪些部门联合印发的？",
+      "gold": [
+        "国家标准委国家发展改革委工业和信息化部生态环境部应急管理部国家能源局"
+      ],
+      "pred_head": "根据资料[1]和[2]，《氢能产业标准体系建设指南（2023版）》是由国家标准委与国家发展改革委、工"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc13d4#1",
+      "refusal": false,
+      "hit": true,
+      "question": "《氢能产业标准体系建设指南（2023版）》涵盖了哪些子体系？",
+      "gold": [
+        "基础与安全氢制备氢储存和输运氢加注氢能应用"
+      ],
+      "pred_head": "根据资料，《氢能产业标准体系建设指南（2023版）》涵盖了五个子体系，包括基础与安全、氢制备、氢储存"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b33b82641eb8ecc13d4#2",
+      "refusal": false,
+      "hit": false,
+      "question": "《氢能产业标准体系建设指南（2023版）》提出的标准制修订工作重点包括哪些方面？",
+      "gold": [
+        "氢能综合评价氢品质氢安全基本要求氢密封应急处置推动绿色低碳氢来源安全高效氢储运加氢站发展氢能转换利用设备与零部件"
+      ],
+      "pred_head": "根据资料[3]，《氢能产业标准体系建设指南（2023版）》提出的标准制修订工作重点包括以下方面：  "
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#0",
+      "refusal": false,
+      "hit": false,
+      "question": "哪位医生给出了大暑期间的健康建议？",
+      "gold": [
+        "徐顺娟医生"
+      ],
+      "pred_head": "根据资料，给出大暑期间健康建议的医生是江苏省中医院急诊科副主任、副主任中医师徐顺娟[3]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#1",
+      "refusal": false,
+      "hit": true,
+      "question": "在大暑期间应避免什么？",
+      "gold": [
+        "长时间在高温环境下工作和活动"
+      ],
+      "pred_head": "根据资料，在大暑期间应避免以下行为：\n\n1. 避免长时间在高温环境下工作和活动，尤其是阳光直射的户外"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#2",
+      "refusal": false,
+      "hit": false,
+      "question": "在大暑期间应避开哪些环境？",
+      "gold": [
+        "阳光直射的户外和高温高湿的密闭环境"
+      ],
+      "pred_head": "根据资料，在大暑期间应避开以下环境：\n\n- 长时间在高温环境下工作和活动，尤其是阳光直射的户外、高温"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#3",
+      "refusal": false,
+      "hit": false,
+      "question": "户外工作者在大暑期间应注意什么？",
+      "gold": [
+        "避开正午时分的长时间暴露穿着透气轻便宽松的衣物并在工作1到2小时后到阴凉通风处休息补充水分和电解质"
+      ],
+      "pred_head": "根据资料，户外工作者在大暑期间应注意以下几点：\n\n1. 尽量避开正午时分在阳光下的长时间暴露，避免长"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#4",
+      "refusal": false,
+      "hit": true,
+      "question": "在大暑期间应穿什么样的衣物？",
+      "gold": [
+        "透气轻便宽松的衣物"
+      ],
+      "pred_head": "根据资料，大暑期间应穿着透气、轻便、宽松的衣物，以避免高温环境下的不适和健康风险[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#5",
+      "refusal": false,
+      "hit": false,
+      "question": "在大暑期间工作多久后应该休息？",
+      "gold": [
+        "1到2小时"
+      ],
+      "pred_head": "根据资料，在大暑期间，建议户外工作者工作1~2小时后到阴凉通风处休息[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#6",
+      "refusal": false,
+      "hit": true,
+      "question": "在大暑期间应补充什么？",
+      "gold": [
+        "水分和电解质"
+      ],
+      "pred_head": "根据资料，在大暑期间应补充水分和电解质，建议少量、多次饮用温开水，适量饮用盐开水、茶水、酸梅汤、绿豆"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#7",
+      "refusal": false,
+      "hit": false,
+      "question": "在大暑期间应如何饮水？",
+      "gold": [
+        "少量多次饮用温开水并适量饮用盐开水茶水酸梅汤绿豆汤等"
+      ],
+      "pred_head": "根据资料，大暑期间饮水应少量、多次饮用温开水，适量饮用盐开水、茶水、酸梅汤、绿豆汤等[1][3]。同"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#8",
+      "refusal": false,
+      "hit": true,
+      "question": "在大暑期间建议饮用哪些饮料？",
+      "gold": [
+        "盐开水茶水酸梅汤绿豆汤等"
+      ],
+      "pred_head": "根据资料，大暑期间建议少量、多次饮用温开水，适量饮用盐开水、茶水、酸梅汤、绿豆汤等[1][2]。同时"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#9",
+      "refusal": false,
+      "hit": true,
+      "question": "在大暑期间不应快速饮用什么？",
+      "gold": [
+        "大量冷开水或冰镇饮料"
+      ],
+      "pred_head": "在大暑期间不应快速饮进大量冷开水或冰镇饮料[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#10",
+      "refusal": false,
+      "hit": false,
+      "question": "运动劳作后应避免什么行为？",
+      "gold": [
+        "立即用冷水洗头冲凉立即站在空调下吹强风"
+      ],
+      "pred_head": "根据资料[1]和[2]，运动劳作后应避免以下行为：不要快速饮进大量冷开水或冰镇饮料，不要在运动劳作后"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#11",
+      "refusal": false,
+      "hit": false,
+      "question": "在大暑期间应避免哪些行为以防止血管痉挛或强烈收缩？",
+      "gold": [
+        "立即用冷水洗头冲凉立即站在空调下吹强风"
+      ],
+      "pred_head": "根据资料，在大暑期间应避免以下行为以防止血管痉挛或强烈收缩：不要快速饮进大量冷开水或冰镇饮料，不要在"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b27b82641eb8ecbe164#12",
+      "refusal": false,
+      "hit": false,
+      "question": "血管痉挛或强烈收缩可能引起什么？",
+      "gold": [
+        "脏器缺血并发疾病"
+      ],
+      "pred_head": "根据资料[1]，血管痉挛或强烈收缩可能引起脏器缺血而并发疾病[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2cb82641eb8ecbf25b#0",
+      "refusal": false,
+      "hit": true,
+      "question": "韩国政府是否考虑要求日本提前排放福岛核污染水？",
+      "gold": [
+        "否认"
+      ],
+      "pred_head": "根据资料，韩国政府明确否认曾要求日本提前排放福岛核污染水。韩国国务调整室第一次长朴购然在记者会上表示"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2cb82641eb8ecbf25b#1",
+      "refusal": false,
+      "hit": false,
+      "question": "韩国最大在野党对韩国政府的回应是什么？",
+      "gold": [
+        "强烈不满"
+      ],
+      "pred_head": "根据资料，韩国最大在野党共同民主党发言人朴省俊在记者会上表示，如果日媒有关报道属实，（尹锡悦政府和执"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2cb82641eb8ecbf25b#2",
+      "refusal": true,
+      "hit": false,
+      "question": "韩国政府和执政党是否忽视国民安全？",
+      "gold": [
+        "可能"
+      ],
+      "pred_head": "资料不足"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2cb82641eb8ecbf25b#3",
+      "refusal": false,
+      "hit": false,
+      "question": "韩日两国的工作磋商是否已经结束？",
+      "gold": [
+        "是"
+      ],
+      "pred_head": "根据资料[1]和[2]，韩国官员朴购然在记者会上表示，韩日两国就福岛核污染水排海的后续措施和安全性问"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2cb82641eb8ecbf25b#4",
+      "refusal": false,
+      "hit": true,
+      "question": "工作磋商的具体结果是否已经对外公开？",
+      "gold": [
+        "尚未"
+      ],
+      "pred_head": "根据资料[1]和[2]，韩国国务调整室第一次长朴购然在记者会上表示，韩日两国就福岛核污染水排海的后续"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb6f#0",
+      "refusal": false,
+      "hit": false,
+      "question": "2023年上半年，中国银行业对小微企业和民营企业的贷款投放增加了多少？",
+      "gold": [
+        "普惠型小微企业贷款新增38万亿元民营企业贷款新增55万亿元"
+      ],
+      "pred_head": "根据资料，2023年上半年，普惠型小微企业贷款新增3.8万亿元，同比多增1.1万亿元；民营企业贷款新"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb6f#1",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年上半年，个人住房贷款中有多少比例用于支持购买首套房？",
+      "gold": [
+        "92"
+      ],
+      "pred_head": "根据资料[1]和[2]，2023年上半年个人住房贷款投放力度加大，其中92%用于支持购买首套房，合理"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb6f#2",
+      "refusal": false,
+      "hit": false,
+      "question": "2023年上半年，银行业和保险业总资产增长了多少？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，2023年二季度末，我国银行业金融机构本外币资产总额406.2万亿元，同比增长10."
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb6f#3",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年上半年，银行业的不良贷款率是多少？",
+      "gold": [
+        "168"
+      ],
+      "pred_head": "根据资料[1][2][3]，2023年上半年末银行业金融机构不良贷款率为1.68%，同比下降0.08"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb6f#4",
+      "refusal": false,
+      "hit": true,
+      "question": "2023年上半年，保险公司原保险保费收入同比增长了多少？",
+      "gold": [
+        "125"
+      ],
+      "pred_head": "根据资料[1]，2023年上半年，保险公司原保险保费收入为3.2万亿元，同比增长12.5%[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc09ad#0",
+      "refusal": false,
+      "hit": true,
+      "question": "岸田文雄计划在哪个会议上解释福岛核污染水排放计划的安全性和科学依据？",
+      "gold": [
+        "美日韩首脑峰会"
+      ],
+      "pred_head": "根据资料，岸田文雄计划在美日韩首脑峰会上向拜登和尹锡悦就排海工作进行说明[3]。此外，他还计划与日本"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc09ad#1",
+      "refusal": false,
+      "hit": true,
+      "question": "岸田文雄计划向哪两位总统解释福岛核污染水排放计划的安全性和科学依据？",
+      "gold": [
+        "美国总统拜登和韩国总统尹锡悦"
+      ],
+      "pred_head": "根据资料[1]，日本首相岸田文雄计划向美国总统拜登和韩国总统尹锡悦解释处理核污水的安全性、科学依据和"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc09ad#2",
+      "refusal": false,
+      "hit": true,
+      "question": "岸田文雄计划在什么时间与日本全国渔业联合会和福岛县渔业联合会的干部会面？",
+      "gold": [
+        "8月21日"
+      ],
+      "pred_head": "根据资料[1]，岸田文雄计划在8月21日与日本全国渔业联合会（全渔联）和福岛县渔业联合会（福岛渔联）"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc09ad#3",
+      "refusal": false,
+      "hit": true,
+      "question": "岸田文雄计划在会面中说明什么问题？",
+      "gold": [
+        "福岛核污染水的安全问题"
+      ],
+      "pred_head": "根据资料，岸田文雄计划在会面中说明福岛核污染水的安全性、科学依据和排放后的措施[1]。此外，他还计划"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#0",
+      "refusal": false,
+      "hit": true,
+      "question": "腾讯2023年第二季度总营收达到多少亿元？",
+      "gold": [
+        "149208亿元"
+      ],
+      "pred_head": "根据资料，腾讯2023年第二季度总营收达到1492.08亿元[1][2][3]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#1",
+      "refusal": false,
+      "hit": false,
+      "question": "腾讯2023年第二季度增值服务业务收入同比增长了多少？",
+      "gold": [
+        "50"
+      ],
+      "pred_head": "根据资料，腾讯2023年第二季度增值服务业务收入同比增长4%[1][3]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#2",
+      "refusal": false,
+      "hit": false,
+      "question": "腾讯2023年第二季度网络广告业务收入同比增长了多少？",
+      "gold": [
+        "17"
+      ],
+      "pred_head": "根据资料，腾讯2023年第二季度网络广告业务收入同比增长34%[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#3",
+      "refusal": false,
+      "hit": false,
+      "question": "腾讯2023年第二季度金融科技及企业服务业务收入同比增长了多少？",
+      "gold": [
+        "32"
+      ],
+      "pred_head": "根据资料，腾讯2023年第二季度金融科技及企业服务业务收入同比增长15%[1][3]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#4",
+      "refusal": false,
+      "hit": true,
+      "question": "腾讯2023年第二季度权益持有人应占盈利多少亿元？",
+      "gold": [
+        "26171亿元"
+      ],
+      "pred_head": "根据资料[1]，腾讯2023年第二季度公司权益持有人应占盈利为261.71亿元，同比增长41%[1]"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#5",
+      "refusal": false,
+      "hit": true,
+      "question": "腾讯2023年第二季度员工人数减少了多少名？",
+      "gold": [
+        "6212名"
+      ],
+      "pred_head": "根据资料[2]，截至2023年6月30日，腾讯有104503名员工，同比减少6212名[2]。因此，"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbec36#6",
+      "refusal": false,
+      "hit": true,
+      "question": "腾讯2023年第二季度微信及WeChat的合并月活跃用户同比增长了多少？",
+      "gold": [
+        "2"
+      ],
+      "pred_head": "根据资料[1]，截至2023年6月30日，微信及WeChat的合并月活跃用户同比增长2%[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc0979#0",
+      "refusal": false,
+      "hit": true,
+      "question": "泰国前总理他信计划在什么时候结束流亡生涯？",
+      "gold": [
+        "8月10日"
+      ],
+      "pred_head": "根据资料[1]，泰国前总理他信计划于8月10日回国，结束其15年的流亡生涯[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc0979#1",
+      "refusal": false,
+      "hit": false,
+      "question": "他信的回国决定是在什么时期作出的？",
+      "gold": [
+        "泰国5月大选后的政治动荡时期"
+      ],
+      "pred_head": "根据资料[1]和[3]，他信的回国决定是在泰国5月大选后政治动荡时期作出的[1][3]。资料[1]提"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc0979#2",
+      "refusal": false,
+      "hit": false,
+      "question": "他信的女儿在社交媒体上表示什么？",
+      "gold": [
+        "家人对他信的回国决定既高兴又担心但尊重他的选择"
+      ],
+      "pred_head": "根据资料，他信的女儿贝东丹·西那瓦在社交媒体上表示，父亲将于8月10日飞抵曼谷廊曼国际机场，并提到父"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc0979#3",
+      "refusal": false,
+      "hit": true,
+      "question": "他信回国后将接受什么程序？",
+      "gold": [
+        "司法程序"
+      ],
+      "pred_head": "根据资料，他信回国后将接受司法程序。泰国国家警察局副局长苏拉切表示：“飞机降落后，警方将正常执行任务"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b32b82641eb8ecc0979#4",
+      "refusal": false,
+      "hit": true,
+      "question": "泰国国家警察局表示他信一旦抵达泰国将做什么？",
+      "gold": [
+        "上法庭听取法官们的决定"
+      ],
+      "pred_head": "根据资料[1]，泰国国家警察局副局长苏拉切表示，他信回国后将接受司法程序，飞机降落后警方将正常执行任"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc0736#0",
+      "refusal": false,
+      "hit": false,
+      "question": "谁在专题会商会上强调了首都北京、雄安新区及大兴机场的防洪安全？",
+      "gold": [
+        "国家防总副总指挥水利部部长李国英"
+      ],
+      "pred_head": "根据资料，水利部部长李国英在专题会商会上强调了首都北京、雄安新区及大兴机场的防洪安全[1][2][3"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc0736#1",
+      "refusal": false,
+      "hit": false,
+      "question": "为确保这些地区的安全，要求采取了哪些措施？",
+      "gold": [
+        "重点分析研判洪水演进过程中的防洪风险预置抢险料物和队伍加强巡查防守并在必要时构筑第二道甚至第三道防线确保防洪绝对安全"
+      ],
+      "pred_head": "根据资料，为确保首都北京（包括大兴机场）、雄安新区和已启用蓄滞洪区内人员的绝对安全，要求采取了以下措"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc0736#2",
+      "refusal": false,
+      "hit": true,
+      "question": "要求指导督促哪个省份落实应对措施？",
+      "gold": [
+        "河北省"
+      ],
+      "pred_head": "根据资料，要求指导督促**河北省**落实应对措施[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc0736#3",
+      "refusal": false,
+      "hit": false,
+      "question": "对白沟河左堤险情采取了什么措施？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料，对白沟河左堤险情采取的措施是：在确保抢险人员安全的前提下，不惜一切代价、采取一切措施抢护白"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b31b82641eb8ecc0736#4",
+      "refusal": false,
+      "hit": true,
+      "question": "对哪些河道进行了安全风险评估和应对？",
+      "gold": [
+        "南拒马河白沟引河萍河"
+      ],
+      "pred_head": "根据资料，对以下河道进行了安全风险评估和应对措施部署：\n\n- 永定河左堤和永定河泛区堤防的防洪风险被"
+    }
+  ]
+}

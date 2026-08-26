@@ -1,0 +1,1080 @@
+{
+  "config": {
+    "split": "dev",
+    "k": 10,
+    "path": "bm25+vector RRF rerank",
+    "temperature": 0.1
+  },
+  "relevant_summary": {
+    "total": 30,
+    "能答率": "26/30",
+    "误拒率": "4/30",
+    "引用合法率(有引用即可)": "26/26"
+  },
+  "non_relevant_summary": {
+    "total": 30,
+    "拒答率": "13/30",
+    "幻觉率(未拒答)": "17/30"
+  },
+  "rows": {
+    "relevant": [
+      {
+        "qid": "2905831#0",
+        "query": "牛排有哪些种类？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1,
+          2,
+          8,
+          8
+        ],
+        "answer_head": "根据提供的资料，牛排的种类主要依据牛只部位区分，常见种类包括：\n\n- 使用牛肩、腿肉或腹肉制作的炸牛排[1]。\n- 用碎"
+      },
+      {
+        "qid": "6551936#0",
+        "query": "英语的使用人数有多少？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          6,
+          6,
+          6,
+          6,
+          1,
+          3,
+          1,
+          6
+        ],
+        "answer_head": "根据现有资料，英语的使用人数可以从多个角度进行估算：\n\n- 作为母语：约4亿人[1][6]。\n- 作为第二语言：约4亿人"
+      },
+      {
+        "qid": "7691151#0",
+        "query": "BBC有哪些争议事件？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          7,
+          8,
+          1,
+          9,
+          10,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8
+        ],
+        "answer_head": "根据提供的资料，BBC的争议事件主要包括以下几类：\n\n1. **以巴冲突报道的公正性争议**：BBC新闻对以巴冲突的报道"
+      },
+      {
+        "qid": "506820#0",
+        "query": "蒙古发现哪些化石？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          6,
+          2,
+          3,
+          5,
+          8,
+          4,
+          7,
+          9,
+          10,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8
+        ],
+        "answer_head": "根据提供的资料，蒙古地区发现的化石包括：\n\n- **蒙古鸚鵡嘴龍**：已發現超過75個個體化石，包括完整的頭顱骨與骨骼，"
+      },
+      {
+        "qid": "199534#0",
+        "query": "英国皇家成员有谁？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          3,
+          10,
+          2,
+          2,
+          9,
+          9,
+          3
+        ],
+        "answer_head": "根据资料，英国王室成员通常指拥有国王/女王、陛下/殿下或王子/公主殿下头衔的人[3]。具体成员包括：\n\n- **现任君主"
+      },
+      {
+        "qid": "5048699#0",
+        "query": "晶界有哪些分类？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          3,
+          3
+        ],
+        "answer_head": "根据资料[3]，晶粒边界（晶界）分为小角度晶界和大角度晶界两类，其中当两个微晶区域之间的角度差值大于15度时称为大角度晶"
+      },
+      {
+        "qid": "1178850#0",
+        "query": "中国有哪些证券交易所？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          5,
+          2,
+          8,
+          6,
+          3,
+          2
+        ],
+        "answer_head": "根据提供的资料，中国的证券交易所包括：\n\n- 上海证券交易所[2][5]\n- 深圳证券交易所[2][8]\n- 北京证券交"
+      },
+      {
+        "qid": "4690218#0",
+        "query": "台湾女子团体SHE成员是谁？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          2
+        ],
+        "answer_head": "根据资料[2]，台湾女子团体S.H.E的成员是Selina（任家萱）、Hebe（田馥甄）和Ella（陳嘉樺）三位成员[2"
+      },
+      {
+        "qid": "567566#0",
+        "query": "明末最后一任皇帝是谁？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          2,
+          4,
+          4
+        ],
+        "answer_head": "根据资料，明末最后一任皇帝是崇祯帝朱由检。资料[2]明确指出，明朝末代皇帝是明思宗朱由检[2]；资料[4]进一步说明，崇"
+      },
+      {
+        "qid": "7047467#0",
+        "query": "霍金毕业于哪所大学？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          3,
+          3
+        ],
+        "answer_head": "根据资料，史蒂芬·霍金于1959年10月入读牛津大学大学学院[2]，并在牛津大学完成本科学业，获得一级荣誉学士学位[3]"
+      },
+      {
+        "qid": "7064742#0",
+        "query": "美国有哪些杂志社？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          6,
+          6,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3,
+          6
+        ],
+        "answer_head": "根据资料，美国拥有庞大的杂志出版业，多数杂志社隶属于某个大型传媒集团或小型地区媒体公司[1][6]。具体杂志社名称在资料"
+      },
+      {
+        "qid": "5524344#0",
+        "query": "古埃及有哪些出土文物？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          2,
+          2,
+          5,
+          3,
+          10,
+          4
+        ],
+        "answer_head": "根据现有资料，古埃及出土文物种类丰富，主要包括以下几类：\n\n- **日常生活与宗教用品**：如油灯、泥板、陶器和钱币碎片"
+      },
+      {
+        "qid": "5524487#0",
+        "query": "混沌现象有哪些特征？",
+        "kind": "relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1,
+          6,
+          1,
+          6,
+          6,
+          5,
+          5,
+          2,
+          3,
+          4,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "answer_head": "根据资料，混沌现象具有以下特征：\n\n1. **确定的但不可预测的运动状态**：混沌现象在动力学上是确定的，但其外在表现与"
+      },
+      {
+        "qid": "6710960#0",
+        "query": "大别山位于哪个省？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1
+        ],
+        "answer_head": "根据资料，大别山位于中国鄂、豫、皖三省交界处[1]，即湖北省、河南省和安徽省。"
+      },
+      {
+        "qid": "1041157#0",
+        "query": "世界上最大的平原在哪里？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          1,
+          7,
+          1,
+          2
+        ],
+        "answer_head": "根据资料，世界上最大的冲积平原是亚马逊平原[1]，而火星上最大的平原是乌托邦平原[2]。但若仅指地球上的平原，资料中未明"
+      },
+      {
+        "qid": "6544475#0",
+        "query": "法国博物馆有哪些藏品？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          1
+        ],
+        "answer_head": "根据资料，法国博物馆的藏品涵盖多种类型，具体如下：\n\n- **雕塑和绘画**：法国博物馆中，雕塑和绘画是主要藏品，一些博"
+      },
+      {
+        "qid": "7843060#0",
+        "query": "三星集团总裁是谁？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          5,
+          1,
+          1,
+          1
+        ],
+        "answer_head": "根据资料，三星集团总裁（会长）在不同时期由不同人士担任：\n\n- 1987年11月，李秉喆去世后，其三子李健熙出任三星第二"
+      },
+      {
+        "qid": "214406#0",
+        "query": "中国有哪些视频网站？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          2,
+          3,
+          10,
+          10,
+          7
+        ],
+        "answer_head": "根据提供的资料，中国的视频网站包括：\n\n- 搜狐视频：中国的一家综合视频网站，支持用户匿名UGC上传功能，并与多家电视台"
+      },
+      {
+        "qid": "4714933#0",
+        "query": "哥斯达黎加的国歌是什么？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          2
+        ],
+        "answer_head": "根据资料[2]，哥斯达黎加的国歌是《高贵家园，你美丽的旗帜》（西班牙语：Noble patria, tu hermosa"
+      },
+      {
+        "qid": "6878076#0",
+        "query": "2020年瑞典羽毛球公开赛奖金多少？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1
+        ],
+        "answer_head": "根据资料[1]，2020年瑞典羽毛球公开赛的总奖金为10,000美元[1]。"
+      },
+      {
+        "qid": "1276927#0",
+        "query": "基督教会有哪些教会标志？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          3,
+          7,
+          2,
+          5,
+          6,
+          2
+        ],
+        "answer_head": "根据提供的资料，基督教会的标志包括：\n\n1. **十字架**：十字架是基督教的主要象征标志，普遍使用于天主教、东正教、新"
+      },
+      {
+        "qid": "1755730#0",
+        "query": "中国有哪些围棋名人？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          4,
+          4,
+          1,
+          1,
+          8,
+          8,
+          2,
+          2,
+          9,
+          9,
+          4,
+          1
+        ],
+        "answer_head": "根据提供的资料，可以整理出以下与中国围棋“名人”相关的信息：\n\n1. **中国围棋名人战冠军（头衔“名人”）**：  \n"
+      },
+      {
+        "qid": "3917#0",
+        "query": "英国第一任君主是谁？",
+        "kind": "relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1,
+          3,
+          3,
+          6,
+          6
+        ],
+        "answer_head": "根据现有资料，无法确定英国第一任君主是谁。资料[1]仅说明现任君主为伊丽莎白二世及其登基时间[1]；资料[3]的世系图从"
+      },
+      {
+        "qid": "228532#0",
+        "query": "俄国在位时间最长的统治者是谁？",
+        "kind": "relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          2
+        ],
+        "answer_head": "根据资料，俄国在位时间最长的统治者是叶卡捷琳娜二世（叶卡捷琳娜大帝），她在位时间为1762年至1796年，长达34年[2"
+      },
+      {
+        "qid": "188245#0",
+        "query": "日本连载时间最长的漫画是？",
+        "kind": "relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          3,
+          3
+        ],
+        "answer_head": "根据现有资料，无法直接确认“日本连载时间最长的漫画”是哪一部。资料[2]提到《Nakayoshi》是日本现存漫画杂志中历"
+      },
+      {
+        "qid": "3185262#0",
+        "query": "春秋时期有哪些思想学派？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          4,
+          2,
+          5,
+          3,
+          4,
+          6,
+          7,
+          7,
+          4
+        ],
+        "answer_head": "根据资料，春秋时期出现了多个思想学派，主要包括：\n\n- **道家**：以老子、列子、庄子为代表，主张“崇尚自然而清静无为"
+      },
+      {
+        "qid": "256817#0",
+        "query": "天津有哪些银行？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          9,
+          1,
+          2,
+          9,
+          1,
+          2,
+          9,
+          1,
+          2,
+          9,
+          1,
+          2,
+          9,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          9,
+          1,
+          2,
+          1,
+          2,
+          9,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1,
+          1,
+          2,
+          1,
+          6,
+          1,
+          6,
+          3,
+          5,
+          8,
+          3,
+          3,
+          5,
+          8,
+          3,
+          5,
+          8,
+          3,
+          5,
+          8,
+          3,
+          5,
+          8,
+          3,
+          3,
+          1,
+          2,
+          3,
+          5,
+          6,
+          8,
+          9
+        ],
+        "answer_head": "根据提供的资料，天津的银行包括以下类型和具体机构：\n\n1. **外资银行**：汇丰银行天津分行（1882年开业）[1]["
+      },
+      {
+        "qid": "2904340#0",
+        "query": "最大的黄道星座是哪里？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          6,
+          2,
+          4
+        ],
+        "answer_head": "根据资料，最大的黄道星座是**室女座**，其面积为1294.43平方度，占全天面积的3.318%，在全天88个星座中面积"
+      },
+      {
+        "qid": "6628609#0",
+        "query": "台湾最大的财阀是什么？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          8,
+          2,
+          8
+        ],
+        "answer_head": "根据提供的资料，台湾最大的财阀是霖園集團，旗下擁有國泰世華銀行、國泰人壽與國泰建設等知名公司，為台灣第一大民營企業[8]"
+      },
+      {
+        "qid": "7306782#0",
+        "query": "雍正皇帝的父亲是谁？",
+        "kind": "relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          8,
+          9,
+          2,
+          8,
+          9
+        ],
+        "answer_head": "根据资料，雍正皇帝的父亲是康熙帝。资料[2]明确记载“雍正帝乃康熙帝第四子”，资料[8]中康熙帝遗诏亦言“皇四子胤禛……"
+      }
+    ],
+    "non_relevant": [
+      {
+        "qid": "5304829-0",
+        "query": "英国有哪些剧场？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          10,
+          3,
+          8,
+          6,
+          6,
+          9
+        ],
+        "answer_head": "根据提供的资料，英国有以下剧场：\n\n- **爱丁堡剧场**（Edinburgh Playhouse）：位于苏格兰爱丁堡，"
+      },
+      {
+        "qid": "1267548-0",
+        "query": "东察合台汗国第一任可汗是谁？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          7,
+          7
+        ],
+        "answer_head": "根据资料[7]，东察合台汗国第一任可汗是禿忽魯帖木兒汗（Tughlugh Timur），他在1347年在位，是察合台后裔"
+      },
+      {
+        "qid": "5482695-0",
+        "query": "千叶千恵巳有哪些代表作品？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1
+        ],
+        "answer_head": "根据资料[1]，千葉千惠巳（千葉千恵巳）的代表作品是《小魔女DoReMi》中的春風DoReMi一角，该角色使其人气上升。"
+      },
+      {
+        "qid": "738370-0",
+        "query": "晚唐时期有哪些画家？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1,
+          1
+        ],
+        "answer_head": "根据资料，晚唐时期的画家信息如下：\n\n- **尹继昭**：晚唐时的著名界画画家[1]。\n- **张为**（虽主要记载为晚"
+      },
+      {
+        "qid": "6001911-0",
+        "query": "三国时魏国有哪些将领被曹操杀害？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          4,
+          4,
+          4,
+          4,
+          4,
+          6,
+          1,
+          9,
+          10
+        ],
+        "answer_head": "根据提供的资料，三国时期魏国将领被曹操杀害的情况如下：\n\n- **董承**：因衣带诏密谋诛杀曹操，事泄后被曹操杀害，夷灭"
+      },
+      {
+        "qid": "1342481-0",
+        "query": "威廉·达福哪一年出生？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          3
+        ],
+        "answer_head": "根据提供的资料，未找到关于“威廉·达福”出生年份的信息。资料中仅提及威廉·达福为美国艺人，参与电影《长城》的演出[3]，"
+      },
+      {
+        "qid": "6647758-0",
+        "query": "哈佛大学2021年有多少学生？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1,
+          1
+        ],
+        "answer_head": "根据现有资料，无法直接找到哈佛大学2021年的学生总数。资料[1]仅提供了2010年的统计，显示学生人数维持在一万九千至"
+      },
+      {
+        "qid": "4647809-0",
+        "query": "秘鲁2010年人口密度多少？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          3,
+          8
+        ],
+        "answer_head": "根据现有资料，未找到秘鲁2010年人口密度的具体数据。资料中仅提及秘鲁的人口总数、增长率、城市与郊区人口比例等，但未提供"
+      },
+      {
+        "qid": "6057105-0",
+        "query": "美国第一艘飞机哪一年建造？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          3,
+          3
+        ],
+        "answer_head": "根据资料[3]，1911年6月，堪萨斯农民用木头和布制作了一架飞机，成为美国密西西比河以西，洛磯山以东的中部地区第一个制"
+      },
+      {
+        "qid": "5583085-0",
+        "query": "日本有哪些漫改游戏？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          7,
+          7,
+          8,
+          8
+        ],
+        "answer_head": "根据资料，未直接提及“漫改游戏”的具体列表，但资料[7]提到日本动漫作品（如《宝可梦》）的“游戏销量和动漫衍生作品亦持续"
+      },
+      {
+        "qid": "806355-0",
+        "query": "澳大利亚2020年平均气温多少？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          4
+        ],
+        "answer_head": "根据提供的资料，**无法找到澳大利亚2020年的平均气温数据**。资料中仅提及澳大利亚北部年均气温为27℃、南部为14℃"
+      },
+      {
+        "qid": "1719911-0",
+        "query": "香港商业电视台2020年有哪些颁奖典礼？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          7,
+          10,
+          2,
+          7,
+          10
+        ],
+        "answer_head": "根据提供的资料，香港商业电台（商台）在2020年相关的颁奖典礼信息如下：\n\n- 2019年度叱咤乐坛流行榜颁奖典礼原定于"
+      },
+      {
+        "qid": "6463354-0",
+        "query": "日本埼玉县2020年人口数多少？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          4,
+          2
+        ],
+        "answer_head": "根据资料[2]，埼玉縣約有730萬人口，但未明确标注为2020年数据。资料[4]提到川口市2020年6月人口為59萬人，"
+      },
+      {
+        "qid": "1299770-0",
+        "query": "英格兰有哪些足球比赛？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          8,
+          1,
+          10,
+          4,
+          9,
+          3,
+          5
+        ],
+        "answer_head": "根据资料，英格兰的足球比赛包括以下几种：\n\n1. **英格兰足总杯**（简称足总杯）：由英格兰足球总会主办的一项男子淘汰"
+      },
+      {
+        "qid": "5170774-0",
+        "query": "吉尔吉斯斯坦有哪些大学？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          2,
+          1,
+          4
+        ],
+        "answer_head": "根据资料，吉尔吉斯斯坦有包括33所公共及21所私人机构在内的54所高等教育机构[2]。此外，资料还提到吉尔吉斯斯坦国内有"
+      },
+      {
+        "qid": "753355-0",
+        "query": "有哪些关于睡眠的医学研究？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          4,
+          5,
+          8,
+          6,
+          10,
+          7
+        ],
+        "answer_head": "根据提供的资料，关于睡眠的医学研究包括以下几个方面：\n\n- 睡眠障碍的临床研究和治疗，属于睡眠医学的范畴[1]。\n- 通"
+      },
+      {
+        "qid": "7368477-0",
+        "query": "香港大学有多少物理学家？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          1
+        ],
+        "answer_head": "根据提供的资料，[1]中仅提到香港大学的张富春受聘为浙大物理系曹光彪讲座教授或特聘教授，但未提及香港大学物理学的总人数或"
+      },
+      {
+        "qid": "5685564-0",
+        "query": "1994年游戏市场总销量多少？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          5,
+          6,
+          8
+        ],
+        "answer_head": "根据提供的资料，**无法找到1994年游戏市场总销量的具体数据**。资料中提及的游戏销量数据均集中于2000年代以后（如"
+      },
+      {
+        "qid": "1151585-0",
+        "query": "TVB有哪些女主持人？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          4,
+          10,
+          2,
+          7,
+          9
+        ],
+        "answer_head": "根据资料，TVB的女主持人包括：黃智雯[1]、劉穎鏇[4]、趙海珠、林燕玲、林小珍、羅若安[10]。此外，资料[2]和["
+      },
+      {
+        "qid": "5323490-0",
+        "query": "有哪些与物联网相关的企业？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          4,
+          2,
+          7,
+          1,
+          1,
+          5,
+          6,
+          9,
+          10
+        ],
+        "answer_head": "根据提供的资料，与物联网相关的企业包括：\n\n- **G7（物联网科技公司）**：2010年在北京成立，是一家物联网科技公"
+      },
+      {
+        "qid": "283204-0",
+        "query": "静脉有哪些分级？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          3,
+          3,
+          9,
+          8,
+          7
+        ],
+        "answer_head": "根据提供的资料，静脉的分级主要体现在注射部位和血管类型上，具体如下：\n\n- **周边静脉**：指位于手、手臂、腿、脚上的"
+      },
+      {
+        "qid": "5791745-0",
+        "query": "印度尼西亚有哪些地质灾害？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          3
+        ],
+        "answer_head": "根据提供的资料，印度尼西亚的地质灾害主要包括地震和火山活动。资料指出，印度尼西亚位于岛弧俯冲型地震构造带，是四个板块碰撞"
+      },
+      {
+        "qid": "1025238-0",
+        "query": "瑞士和丹麦2020年贸易量多少？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          5,
+          2,
+          3,
+          10
+        ],
+        "answer_head": "根据提供的资料，未找到关于瑞士和丹麦2020年贸易量的相关信息。资料中仅提及瑞士与中国2013年的双边贸易额[5]，以及"
+      },
+      {
+        "qid": "57535-0",
+        "query": "三角形的面积公式是什么？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          5,
+          2,
+          7,
+          9,
+          10,
+          3,
+          8,
+          6
+        ],
+        "answer_head": "三角形的面积公式有多种形式，具体取决于已知条件：\n\n1. **已知底和高**：面积 = 底 × 高 ÷ 2。这是最基础的"
+      },
+      {
+        "qid": "1557940-0",
+        "query": "国际辐射单位与度量委员会有哪些国家加入？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          4,
+          4
+        ],
+        "answer_head": "根据提供的资料，未找到关于“国际辐射单位与度量委员会”成员国家名单的具体信息。资料[4]仅说明该委员会于1925年由国际"
+      },
+      {
+        "qid": "1233432-0",
+        "query": "斯里兰卡2020年人口多少？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          6
+        ],
+        "answer_head": "根据现有资料，未找到斯里兰卡2020年人口的具体数据。资料[1]仅提及2020年斯里兰卡议会选举中符合资格的选民数为16"
+      },
+      {
+        "qid": "3071848-0",
+        "query": "美国2020年新增人口多少？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          8,
+          4,
+          4,
+          8
+        ],
+        "answer_head": "根据现有资料，**未找到美国2020年新增人口的具体数据**。资料[8]仅提及“过去十年，美国人口增长了7.4%”，但未"
+      },
+      {
+        "qid": "600370-0",
+        "query": "中美合拍国哪些电影？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          3,
+          4,
+          6,
+          2,
+          6
+        ],
+        "answer_head": "根据提供的资料，中美合拍的电影包括：\n\n- 《北京故事》：由中新社电影声像部与美方合拍，引发了海外观众的很大兴趣[1]。"
+      },
+      {
+        "qid": "726896-0",
+        "query": "中国有哪些女高音艺术家？",
+        "kind": "non_relevant",
+        "refusal": false,
+        "answered": true,
+        "n_evidence": 10,
+        "citations": [
+          1,
+          2,
+          6,
+          9,
+          4,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "answer_head": "根据提供的资料，中国的女高音艺术家包括：\n\n- 王昆：中国女高音歌唱家、歌剧表演艺术家，河北唐县人[1]。\n- 高芝兰："
+      },
+      {
+        "qid": "5484214-0",
+        "query": "天津最大的工厂在哪里？",
+        "kind": "non_relevant",
+        "refusal": true,
+        "answered": false,
+        "n_evidence": 10,
+        "citations": [
+          7,
+          8
+        ],
+        "answer_head": "根据现有资料，无法直接确定“天津最大的工厂”的具体位置。资料中提及了多个大型工业项目和企业，如空客A320总装线、空客A"
+      }
+    ]
+  }
+}

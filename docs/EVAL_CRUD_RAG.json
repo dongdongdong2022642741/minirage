@@ -1,0 +1,267 @@
+{
+  "config": {
+    "top_k": 5,
+    "temperature": 0.1
+  },
+  "summary": {
+    "1Doc": {
+      "准确率(包含匹配)": "5/8",
+      "拒答数": 0
+    },
+    "2Docs": {
+      "准确率(包含匹配)": "4/7",
+      "拒答数": 0
+    },
+    "3Docs": {
+      "准确率(包含匹配)": "5/7",
+      "拒答数": 1
+    },
+    "overall": {
+      "准确率": "14/22"
+    }
+  },
+  "rows": [
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b33b82641eb8ecc1243#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁发现了70磅的可卡因？",
+      "gold": [
+        "简卡斯特"
+      ],
+      "pred_head": "根据资料[1]，美国佛罗里达州坦帕市市长简·卡斯特（Jane Castor）与家人在佛罗里达群岛钓鱼"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b33b82641eb8ecc1243#1",
+      "refusal": false,
+      "hit": true,
+      "question": "这些毒品的估计市价超过多少美元？",
+      "gold": [
+        "100万美元"
+      ],
+      "pred_head": "根据资料[1]，这些70磅可卡因的估计市价超过100万美元（约合人民币721万元），美国边境巡逻队迈"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbb7#0",
+      "refusal": false,
+      "hit": true,
+      "question": "是谁提出了“七不得”提醒告诫？",
+      "gold": [
+        "市场价格秩序稳定"
+      ],
+      "pred_head": "根据资料[1]，市场监管总局于2023年8月5日发布了关于汛期维护市场价格秩序稳定的公告，对相关经营"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbb7#1",
+      "refusal": false,
+      "hit": false,
+      "question": "“七不得”提醒告诫的目的是什么？",
+      "gold": [
+        "维护市场价格秩序稳定"
+      ],
+      "pred_head": "根据资料[1]，“七不得”提醒告诫的目的是为保障洪涝地区重要民生商品和服务市场价格基本稳定，制止哄抬"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b2eb82641eb8ecbfbb7#2",
+      "refusal": false,
+      "hit": true,
+      "question": "“七不得”提醒告诫是为了维护什么时期的市场价格秩序稳定？",
+      "gold": [
+        "汛期"
+      ],
+      "pred_head": "根据资料[1]，市场监管总局发布的“七不得”提醒告诫是为了保障洪涝地区重要民生商品和服务市场价格基本"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc08ab#0",
+      "refusal": false,
+      "hit": true,
+      "question": "贾斯廷·特鲁多和索菲·特鲁多结婚多久了？",
+      "gold": [
+        "18年"
+      ],
+      "pred_head": "根据资料[1]，贾斯廷·特鲁多和索菲·特鲁多结婚18年后正式分居[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc08ab#1",
+      "refusal": false,
+      "hit": false,
+      "question": "贾斯廷·特鲁多和索菲·特鲁多宣布分居了吗？",
+      "gold": [
+        "是的"
+      ],
+      "pred_head": "根据资料[1]，加拿大总理贾斯廷·特鲁多与妻子索菲·特鲁多于2023年8月2日宣布正式分居[1]。"
+    },
+    {
+      "tier": "1Doc",
+      "qid": "64fa9b32b82641eb8ecc08ab#2",
+      "refusal": false,
+      "hit": false,
+      "question": "他们宣布分居的时间是什么时候？",
+      "gold": [
+        "无法推断"
+      ],
+      "pred_head": "根据资料[1]，加拿大总理贾斯廷·特鲁多与妻子索菲·特鲁多于2023年8月2日宣布正式分居[1]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf3ea#0",
+      "refusal": false,
+      "hit": true,
+      "question": "纪念中日和平友好条约缔结了多少周年？",
+      "gold": [
+        "45周年"
+      ],
+      "pred_head": "纪念中日和平友好条约缔结45周年[1][2]。"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf3ea#1",
+      "refusal": false,
+      "hit": true,
+      "question": "中国驻日大使强调了哪些核心原则？",
+      "gold": [
+        "互不干涉内政使用和平手段解决一切争端共同反对任何国家谋求霸权"
+      ],
+      "pred_head": "根据资料[2]，中国驻日大使吴江浩强调了中日和平友好条约规定的一系列核心原则，包括：中日互不干涉内政"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf3ea#2",
+      "refusal": false,
+      "hit": false,
+      "question": "中国驻日大使对日本国内的哪些行为表示了担忧？",
+      "gold": [
+        "渲染中国威胁煽动台海有事以及有人扬言要强化威慑力立足于战的言论"
+      ],
+      "pred_head": "根据资料，中国驻日大使吴江浩对日本国内一些人忘却历史教训、渲染“中国威胁”、煽动“台海有事”以及扬言"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#0",
+      "refusal": false,
+      "hit": true,
+      "question": "四平市委组宣部要加强什么？",
+      "gold": [
+        "宣讲宣传力量的统筹协同"
+      ],
+      "pred_head": "根据资料[1]，四平市委组宣部（即共青团四平市委组宣部）要加强各级各类宣讲宣传力量的统筹协同，深入基"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#1",
+      "refusal": false,
+      "hit": true,
+      "question": "团中央示范宣讲团走进了哪个省份？",
+      "gold": [
+        "山西"
+      ],
+      "pred_head": "根据资料[1]，团中央“青春心向党 奋进新征程”示范宣讲团走进了山西，在太原、晋城等地开展主题宣讲["
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#2",
+      "refusal": false,
+      "hit": false,
+      "question": "团中央示范宣讲团在太原和晋城做了什么？",
+      "gold": [
+        "面对面交流互动开展主题宣讲"
+      ],
+      "pred_head": "根据资料[1]，团中央“青春心向党 奋进新征程”示范宣讲团于7月26日至27日走进山西，在太原、晋城"
+    },
+    {
+      "tier": "2Docs",
+      "qid": "64fa9b2db82641eb8ecbf6dd#3",
+      "refusal": false,
+      "hit": false,
+      "question": "有多少团员青年和团干部代表参加了活动？",
+      "gold": [
+        "800余人"
+      ],
+      "pred_head": "根据资料[1]，共有800余名团员青年、团干部代表参加了活动[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#0",
+      "refusal": false,
+      "hit": true,
+      "question": "谁表示应自觉规范减持行为？",
+      "gold": [
+        "证监会"
+      ],
+      "pred_head": "根据资料，中国证监会表示，上市公司大股东、董监高应自觉规范减持行为，不得以离婚、解散清算、分立等任何"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#1",
+      "refusal": false,
+      "hit": false,
+      "question": "在离婚分割股份时应遵守什么规定？",
+      "gold": [
+        "相关规定"
+      ],
+      "pred_head": "根据资料，上市公司大股东、董监高因离婚、法人（或非法人组织）终止、公司分立等形式分配股份的，各方应当"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#2",
+      "refusal": false,
+      "hit": true,
+      "question": "今年至少公告了几例股东离婚分割股份的案例？",
+      "gold": [
+        "8例"
+      ],
+      "pred_head": "根据资料[1]，据不完全统计，今年以来，上市公司至少公告股东离婚分割股份8例[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b2bb82641eb8ecbeb7a#3",
+      "refusal": false,
+      "hit": true,
+      "question": "有多少例涉及离婚后的计划或实际减持股份？",
+      "gold": [
+        "9例"
+      ],
+      "pred_head": "根据资料[1]，据不完全统计，今年以来，上市公司至少公告股东离婚分割股份8例，离婚后计划或实际减持股"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b34b82641eb8ecc1624#0",
+      "refusal": false,
+      "hit": true,
+      "question": "南宁队在手球比赛中以多少比分战胜了北海队？",
+      "gold": [
+        "44535"
+      ],
+      "pred_head": "南宁队以44.5:35战胜北海队[1][2]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b34b82641eb8ecc1624#1",
+      "refusal": false,
+      "hit": true,
+      "question": "广东队在冰球比赛中通过谁的进球扳平了比分？",
+      "gold": [
+        "林绮琪"
+      ],
+      "pred_head": "根据资料[1]，广东队在第25分钟由前锋林绮琪利用五打四的有力局面扳平比分[1]。"
+    },
+    {
+      "tier": "3Docs",
+      "qid": "64fa9b34b82641eb8ecc1624#2",
+      "refusal": true,
+      "hit": false,
+      "question": "最终广东队以多少比分战胜了北京队？",
+      "gold": [
+        "21"
+      ],
+      "pred_head": "资料不足"
+    }
+  ]
+}

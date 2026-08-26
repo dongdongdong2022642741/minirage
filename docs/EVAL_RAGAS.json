@@ -1,0 +1,90 @@
+{
+  "mean": {
+    "faithfulness": 0.95,
+    "answer_relevancy": 0.9035,
+    "context_precision": 0.95,
+    "context_recall": 1.0
+  },
+  "rows": [
+    {
+      "qid": 1,
+      "question": "产品 A 一个账号一年多少钱？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9554,
+      "context_precision": 0.5,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 2,
+      "question": "企业旗舰版和产品 A 相比多了哪些功能？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8572,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 3,
+      "question": "退款政策是什么？7 天后还能退款吗？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9581,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 4,
+      "question": "企业旗舰版的 SLA 是多少？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8293,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 5,
+      "question": "入职满 3 年，年假有几天？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9666,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 6,
+      "question": "出差住宿标准一线城市每晚多少？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8959,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 7,
+      "question": "外部培训费用超过多少需要总监审批？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9769,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 8,
+      "question": "年假没休完怎么办？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8346,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 9,
+      "question": "数据库每天几点备份？保留多久？",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8021,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    },
+    {
+      "qid": 14,
+      "question": "生产发布窗口是什么时候？",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.9586,
+      "context_precision": 1.0,
+      "context_recall": 1.0
+    }
+  ]
+}
