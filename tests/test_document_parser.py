@@ -109,7 +109,7 @@ class ParseFileTests(unittest.TestCase):
             self.assertIn("## 第 2 页", doc.text)
             self.assertIn("第二页内容", doc.text)
 
-    def test_scanned_pdf_without_text_requires_ocr(self):
+    def test_scanned_pdf_without_text_fails_when_ocr_disabled(self):
         class FakePage:
             def extract_text(self):
                 return ""
@@ -121,9 +121,58 @@ class ParseFileTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "scan.pdf"
             path.write_bytes(b"%PDF-test")
-            with patch("pypdf.PdfReader", FakeReader):
-                with self.assertRaisesRegex(ValueError, "require OCR"):
+            with patch("pypdf.PdfReader", FakeReader), \
+                    patch("docparser.ocr.ocr_enabled", return_value=False):
+                with self.assertRaisesRegex(ValueError, "OCR"):
                     parse_file(path)
+
+    def test_scanned_pdf_uses_ocr_when_enabled(self):
+        class FakePage:
+            def extract_text(self):
+                return ""
+
+        class FakeReader:
+            def __init__(self, _path):
+                self.pages = [FakePage()]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "scan.pdf"
+            path.write_bytes(b"%PDF-test")
+            with patch("pypdf.PdfReader", FakeReader), \
+                    patch("docparser.ocr.ocr_enabled", return_value=True), \
+                    patch("docparser.ocr.ocr_pdf_page",
+                          return_value="OCR 识别的中文内容") as fake_ocr:
+                doc = parse_file(path)
+
+            self.assertIn("## 第 1 页", doc.text)
+            self.assertIn("OCR 识别的中文内容", doc.text)
+            fake_ocr.assert_called_once()
+
+    def test_ocr_failure_on_one_page_does_not_kill_text_pages(self):
+        class FakeTextPage:
+            def extract_text(self):
+                return "第一页有文本层"
+
+        class FakeEmptyPage:
+            def extract_text(self):
+                return ""
+
+        class FakeReader:
+            def __init__(self, _path):
+                self.pages = [FakeTextPage(), FakeEmptyPage()]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "mixed.pdf"
+            path.write_bytes(b"%PDF-test")
+            with patch("pypdf.PdfReader", FakeReader), \
+                    patch("docparser.ocr.ocr_enabled", return_value=True), \
+                    patch("docparser.ocr.ocr_pdf_page",
+                          side_effect=RuntimeError("engine boom")):
+                doc = parse_file(path)
+
+            self.assertIn("## 第 1 页", doc.text)
+            self.assertIn("第一页有文本层", doc.text)
+            self.assertNotIn("## 第 2 页", doc.text)
 
 
 class LoadDocumentsTests(unittest.TestCase):

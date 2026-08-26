@@ -8,3 +8,7 @@ lxml>=5.0,<7
 
 # test-only: FastAPI TestClient
 httpx>=0.27,<1
+
+# OCR（扫描页识别，模型随包内置离线可用）
+rapidocr-onnxruntime>=1.3,<2
+pypdfium2>=4,<5

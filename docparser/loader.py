@@ -144,14 +144,25 @@ def _read_pdf(path: Path) -> tuple[str, str]:
     try:
         from pypdf import PdfReader
 
+        from docparser.ocr import ocr_enabled, ocr_pdf_page
+
         reader = PdfReader(path)
         pages: list[str] = []
         for page_number, page in enumerate(reader.pages, 1):
             text = (page.extract_text() or "").replace("\x00", "").strip()
+            if not text and ocr_enabled():
+                # 无文本层（扫描页）-> 栅格化后 OCR；失败视为该页无文本
+                try:
+                    text = ocr_pdf_page(path, page_number - 1).strip()
+                except Exception as error:
+                    print(f"[ocr] page {page_number} of {path.name} failed: {error}")
+                    text = ""
             if text:
                 pages.append(f"## 第 {page_number} 页\n\n{text}")
         if not pages:
-            raise ValueError("PDF contains no extractable text; scanned PDFs require OCR")
+            raise ValueError(
+                "PDF contains no extractable text and OCR produced nothing "
+                "(scanned PDF; check KB_OCR / image quality)")
         return "\n\n".join(pages), "pdf"
     except ValueError:
         raise

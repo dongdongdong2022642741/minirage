@@ -1,0 +1,1016 @@
+{
+  "info": {
+    "exists": true,
+    "name": "questions.md",
+    "count": 60,
+    "answer_count": 48,
+    "refuse_count": 12
+  },
+  "rows": [
+    {
+      "qid": 1,
+      "query": "产品 A 的每月定价是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        2
+      ],
+      "hit_kws": [
+        "299"
+      ],
+      "answer": "产品 A 的每月定价为 299 元/账号（年付可享八折，即 239 元/月）[2]。"
+    },
+    {
+      "qid": 2,
+      "query": "产品 A 年付打折后每月多少钱",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        2,
+        2
+      ],
+      "hit_kws": [
+        "239"
+      ],
+      "answer": "根据资料[2]，产品 A 年付打八折后价格为每账号每月 239 元[2]。"
+    },
+    {
+      "qid": 3,
+      "query": "产品 B 的每月定价是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "999"
+      ],
+      "answer": "产品 B 的每月定价为每账号每月 999 元；若选择年付，可享受八折优惠，即每账号每月 799 元[1]。"
+    },
+    {
+      "qid": 4,
+      "query": "产品 B 相比产品 A 多出哪些能力",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        3
+      ],
+      "hit_kws": [
+        "多租户",
+        "私有化",
+        "SLA"
+      ],
+      "answer": "根据资料，产品 B 相比产品 A 多出的能力包括：多租户隔离、私有化部署、SLA 99.9% 可用性承诺、专属客户经理、7×24 小时技术支持，以及支持的数据源接入数量从 3 个提升至 20 个[1][3]。"
+    },
+    {
+      "qid": 5,
+      "query": "产品 A 支持接入几个数据源",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "3"
+      ],
+      "answer": "产品 A 支持接入 3 个数据源[1]。"
+    },
+    {
+      "qid": 6,
+      "query": "产品 B 支持接入几个数据源",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "20"
+      ],
+      "answer": "产品 B 支持接入 20 个数据源[1]。"
+    },
+    {
+      "qid": 7,
+      "query": "购买后几天内可以无条件退款",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "7天"
+      ],
+      "answer": "购买后 7 天内可无条件退款[1]。"
+    },
+    {
+      "qid": 8,
+      "query": "产品 B 承诺的 SLA 可用性是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "99.9"
+      ],
+      "answer": "产品 B 承诺的 SLA 可用性为 99.9%[1]。"
+    },
+    {
+      "qid": 9,
+      "query": "入职满三年的员工年假有几天",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "10天"
+      ],
+      "answer": "根据资料[1]，入职满3年的员工年假为10天[1]。"
+    },
+    {
+      "qid": 10,
+      "query": "年假没休完可以怎么处理",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1,
+        1
+      ],
+      "hit_kws": [
+        "顺延"
+      ],
+      "answer": "根据资料[1]，年假未休完可顺延至次年3月31日，过期作废[1]。因此，未休完的年假只能顺延至次年3月31日前使用，逾期将自动失效，没有其他处理方式[1]。"
+    },
+    {
+      "qid": 11,
+      "query": "病假期间工资按什么比例发放",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "80"
+      ],
+      "answer": "根据资料[1]，病假期间工资按80%发放。"
+    },
+    {
+      "qid": 12,
+      "query": "事假是否带薪",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "无薪"
+      ],
+      "answer": "根据资料[1]中的规定，事假为“无薪”，即不带薪。因此，事假不带薪[1]。"
+    },
+    {
+      "qid": 13,
+      "query": "一线城市出差的住宿报销标准",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "500"
+      ],
+      "answer": "根据资料[1]，一线城市出差的住宿报销标准为每晚500元[1]。"
+    },
+    {
+      "qid": 14,
+      "query": "出差期间的餐饮补贴是每天多少钱",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "80"
+      ],
+      "answer": "根据资料[1]，出差期间的餐饮补贴为每天80元，出差期间按天发放[1]。"
+    },
+    {
+      "qid": 15,
+      "query": "出差结束后多久之内要提交报销",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "5个工作日"
+      ],
+      "answer": "根据资料[1]，出差结束后需在5个工作日内提交报销[1]。"
+    },
+    {
+      "qid": 16,
+      "query": "外部培训费用超过多少需要总监审批",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "5000"
+      ],
+      "answer": "根据资料[1]，外部培训费用5000元以上需部门总监审批。"
+    },
+    {
+      "qid": 17,
+      "query": "生产环境的数据库每天几点做全量备份",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "凌晨"
+      ],
+      "answer": "根据资料[1]，生产环境的数据库每天凌晨 2:00 进行全量备份，备份保留 30 天[1]。"
+    },
+    {
+      "qid": 18,
+      "query": "数据库备份保留多长时间",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "30天"
+      ],
+      "answer": "根据资料[1]，数据库定时备份保留30天[1]。"
+    },
+    {
+      "qid": 19,
+      "query": "生产环境使用的数据库是什么",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "PostgreSQL"
+      ],
+      "answer": "生产环境使用的数据库是 PostgreSQL 15，主备自动切换通过 PgPool 实现[1]。"
+    },
+    {
+      "qid": 20,
+      "query": "应用服务的端口号是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "8080"
+      ],
+      "answer": "根据资料[1]，应用端口为 Web 服务 8080[1]。"
+    },
+    {
+      "qid": 21,
+      "query": "数据库服务的端口号是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "5432"
+      ],
+      "answer": "根据资料[1]，数据库端口号为5432[1]。"
+    },
+    {
+      "qid": 22,
+      "query": "磁盘使用率达到多少会触发告警",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "85"
+      ],
+      "answer": "根据资料[1]，磁盘使用率超过85%会触发告警[1]。"
+    },
+    {
+      "qid": 23,
+      "query": "告警通过哪些渠道通知",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "钉钉",
+        "短信"
+      ],
+      "answer": "告警通过钉钉群和短信两个渠道进行通知[1]。"
+    },
+    {
+      "qid": 24,
+      "query": "运维值班电话是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "400-800-1234"
+      ],
+      "answer": "根据资料[1]，运维值班电话是400-800-1234（7×24）[1]。"
+    },
+    {
+      "qid": 25,
+      "query": "服务器重启时应该先停应用还是先停数据库",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1,
+        1
+      ],
+      "hit_kws": [
+        "先停应用",
+        "app-web"
+      ],
+      "answer": "根据资料[1]的“重启流程”说明，重启时应先停应用（`systemctl stop app-web`），再停数据库（`systemctl stop postgresql`）[1]。启动顺序则相反，先启动数据库，再启动应用[1]。"
+    },
+    {
+      "qid": 26,
+      "query": "代码变更至少需要几名评审人员",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "2名"
+      ],
+      "answer": "根据资料[1]，所有代码变更必须经过至少 2 名评审人员审查[1]。"
+    },
+    {
+      "qid": 27,
+      "query": "紧急修复合入后多久内必须补审",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "hit_kws": [
+        "24小时"
+      ],
+      "answer": "根据资料[1]和[2]，紧急修复可先合入后补审，但须在24小时内完成补审[1][2]。"
+    },
+    {
+      "qid": 28,
+      "query": "新增代码的行覆盖率要求是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "80"
+      ],
+      "answer": "根据资料[1]，新增代码行覆盖率不得低于80%[1]。"
+    },
+    {
+      "qid": 29,
+      "query": "核心支付模块的覆盖率要求是多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "90"
+      ],
+      "answer": "根据资料[1]，核心支付模块的覆盖率要求是90%以上[1]。"
+    },
+    {
+      "qid": 30,
+      "query": "生产发布的窗口是每周哪两天",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "周二",
+        "周四"
+      ],
+      "answer": "根据资料[1]，生产发布窗口为每周二、周四的14:00-16:00[1]。"
+    },
+    {
+      "qid": 31,
+      "query": "发布失败后多久内必须回滚",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "30分钟"
+      ],
+      "answer": "根据资料[1]，发布失败后必须在30分钟内回滚[1]。"
+    },
+    {
+      "qid": 32,
+      "query": "P0 级生产事故的响应时限是多久",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "15分钟"
+      ],
+      "answer": "根据资料[1]，P0 级生产事故的响应时限为 **15 分钟内**，且可直接跳过评审进行修复[1]。"
+    },
+    {
+      "qid": 33,
+      "query": "重大版本发布需要谁审批",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "CTO"
+      ],
+      "answer": "根据资料[1]，重大版本发布需CTO审批[1]。"
+    },
+    {
+      "qid": 34,
+      "query": "常规岗位的面试共有几轮",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "3轮"
+      ],
+      "answer": "根据资料[1]，常规岗位面试共3轮：技术初面、技术终面、HR面[1]。"
+    },
+    {
+      "qid": 35,
+      "query": "管理岗位招聘要额外增加什么环节",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "交叉面"
+      ],
+      "answer": "根据资料[1]，管理岗位面试在常规岗位的3轮面试（技术初面、技术终面、HR面）基础上，额外增加1轮交叉面[1]。"
+    },
+    {
+      "qid": 36,
+      "query": "面试结果多少个工作日内通知候选人",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "5个工作日"
+      ],
+      "answer": "根据资料[1]，面试结果在5个工作日内通知候选人[1]。"
+    },
+    {
+      "qid": 37,
+      "query": "试用期是多长时间",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "3个月"
+      ],
+      "answer": "试用期是3个月，表现优秀可提前1个月转正[1]。"
+    },
+    {
+      "qid": 38,
+      "query": "试用期工资是转正后工资的百分之多少",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "90"
+      ],
+      "answer": "试用期工资为转正后的90%[1]。"
+    },
+    {
+      "qid": 39,
+      "query": "技术岗位的内推奖金是多少钱",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "8000"
+      ],
+      "answer": "根据资料[1]，技术岗位的内推奖金为8000元，分两期发放：入职时发放50%，转正时发放50%[1]。"
+    },
+    {
+      "qid": 40,
+      "query": "内推奖金分几期如何发放",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "50",
+        "两期"
+      ],
+      "answer": "根据资料[1]，内推奖金分两期发放：入职时发放50%，转正时发放50%[1]。"
+    },
+    {
+      "qid": 41,
+      "query": "薪酬超出预算多少需要 HRD 审批",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "10"
+      ],
+      "answer": "薪酬超出预算10%以上需HRD审批[1]。"
+    },
+    {
+      "qid": 42,
+      "query": "密码多少天强制更换一次",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1
+      ],
+      "hit_kws": [
+        "90天"
+      ],
+      "answer": "根据资料[1]，密码每90天强制更换一次。"
+    },
+    {
+      "qid": 43,
+      "query": "密码长度至少要求多少位",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "12位"
+      ],
+      "answer": "根据资料[1]，密码至少12位，须包含大小写字母、数字和特殊字符[1]。"
+    },
+    {
+      "qid": 44,
+      "query": "离职员工的账号当天要怎么处理",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "回收"
+      ],
+      "answer": "根据资料[1]，离职员工账号当天回收，邮箱转接直属上级[1]。"
+    },
+    {
+      "qid": 45,
+      "query": "VPN 账号是否允许多人共用",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "禁止"
+      ],
+      "answer": "根据资料[1]，“VPN 账号一人一号，禁止共享”，因此VPN账号不允许多人共用[1]。"
+    },
+    {
+      "qid": 46,
+      "query": "公司数据分为哪几个级别",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "机密",
+        "公开",
+        "内部"
+      ],
+      "answer": "根据资料[1]，公司数据分为三个级别：公开、内部、机密[1]。"
+    },
+    {
+      "qid": 47,
+      "query": "机密数据导出的审批时限是多久",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "2个工作日"
+      ],
+      "answer": "根据资料[1]，机密数据导出须走审批流程，审批时限为2个工作日[1]。"
+    },
+    {
+      "qid": 48,
+      "query": "异地备份的数据要保留多久",
+      "kind": "answer",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": false,
+      "retried": false,
+      "citations": [
+        1,
+        1
+      ],
+      "hit_kws": [
+        "6个月"
+      ],
+      "answer": "根据资料[1]中的规定，“数据备份异地保存，至少保留 6 个月”[1]。因此，异地备份的数据至少需要保留6个月。"
+    },
+    {
+      "qid": 49,
+      "query": "公司年会定在哪家酒店举办",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于公司年会举办酒店的任何信息。资料中仅包含产品手册、假期制度、产品介绍和员工制度手册等内容[1][2][3][4][5]，未涉及年会相关安排。"
+    },
+    {
+      "qid": 50,
+      "query": "竞品公司的产品定价策略是怎样的",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "抱歉，根据提供的资料，我无法回答关于“竞品公司的产品定价策略”的问题。资料[1]至[5]仅包含本公司产品（产品A、产品B）的定价、功能及内推奖励等信息，未涉及任何竞品公司的定价策略内容。"
+    },
+    {
+      "qid": 51,
+      "query": "员工年度体检的报销标准是多少",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "抱歉，在提供的资料中未找到关于“员工年度体检报销标准”的相关信息。资料[1]至[5]主要涉及报销制度（差旅、市内交通、餐饮）、培训制度、假期制度以及账号与密码管理，均未提及体检报销内容。因此无法回答该问题。"
+    },
+    {
+      "qid": 52,
+      "query": "办公室停车位如何申请",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [],
+      "hit_kws": [],
+      "answer": "资料中未找到关于“办公室停车位如何申请”的相关信息，因此无法回答该问题。建议您查阅行政或后勤相关制度，或联系相关部门咨询。"
+    },
+    {
+      "qid": 53,
+      "query": "公司有股票期权激励计划吗",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        2,
+        4,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于公司股票期权激励计划的相关信息。资料中仅涉及内推奖励[2]、试用期[4]和培训制度[5]等内容，未提及股票期权激励计划。"
+    },
+    {
+      "qid": 54,
+      "query": "客户成功团队的绩效考核方案是什么",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "抱歉，根据提供的资料，我未能找到关于“客户成功团队的绩效考核方案”的相关信息。资料中仅涉及试用期、员工制度手册、研发流程手册、内推奖励以及产品B的定价与功能，均未提及客户成功团队的考核内容[1][2][3][4][5]。建议您查阅其他相关文档或补充资料。"
+    },
+    {
+      "qid": 55,
+      "query": "法务合同的审批流程是怎样的",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，**未找到**关于“法务合同审批流程”的相关信息。资料[1]至[5]仅涉及招聘、数据分级、紧急修复、招聘流程和发布流程，均未提及法务或合同审批内容。因此，无法从现有资料中提取答案。"
+    },
+    {
+      "qid": 56,
+      "query": "出差的机票应该在哪里预订",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于“出差的机票应该在哪里预订”的相关信息。资料[1]仅涉及差旅住宿标准、市内交通、餐饮补贴和报销流程，未提及机票预订渠道或规定。建议您查阅公司其他相关制度或咨询行政部门。"
+    },
+    {
+      "qid": 57,
+      "query": "产品 C 计划什么时候发布",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        5,
+        3,
+        1
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于“产品 C”的任何信息，因此无法回答其计划发布时间。资料中仅涉及产品A[5]、产品B[3]及发布流程[1]等内容。"
+    },
+    {
+      "qid": 58,
+      "query": "远程办公有没有额外补贴",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于“远程办公额外补贴”的相关信息。资料[1]仅涉及VPN使用规范，[2]为差旅报销制度，[3]为招聘流程，[4]为产品介绍，[5]为内推奖励，均未提及远程办公补贴政策。"
+    },
+    {
+      "qid": 59,
+      "query": "实习生转正的名额比例是多少",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于“实习生转正名额比例”的相关信息。资料[1]仅涉及试用期时长、工资及考核方式，未提及实习生转正比例或名额限制。建议补充相关制度文件。"
+    },
+    {
+      "qid": 60,
+      "query": "数据中心的机房位于哪个城市",
+      "kind": "refuse",
+      "ok": true,
+      "verdict": "PASS",
+      "refusal": true,
+      "retried": true,
+      "citations": [
+        1
+      ],
+      "hit_kws": [],
+      "answer": "根据提供的资料，未找到关于“数据中心的机房位于哪个城市”的相关信息。资料中仅提及生产服务器地址（10.10.1.20、10.10.1.21）及操作系统（Ubuntu 22.04）[1]，但未说明机房地理位置。"
+    }
+  ],
+  "summary": {
+    "answer_rate": "48/48",
+    "refuse_rate": "12/12",
+    "cited": 48,
+    "fails": []
+  }
+}
