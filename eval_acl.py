@@ -116,7 +116,8 @@ def run_acl_matrix(kb: KnowledgeBase, cfg: dict,
 def main() -> int:
     parser = argparse.ArgumentParser(description="ACL 权限矩阵评测")
     parser.add_argument("--cases", default=str(ROOT / "data" / "kb" / "acl_cases.json"))
-    parser.add_argument("--json", dest="json_out", default=None)
+    parser.add_argument("--json", dest="json_out",
+                        default=str(ROOT / "docs" / "EVAL_ACL.json"))
     parser.add_argument("--no-state-probe", action="store_true")
     args = parser.parse_args()
 
