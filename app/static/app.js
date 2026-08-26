@@ -4,19 +4,20 @@ const $ = (sel) => document.querySelector(sel);
 
 const els = {
   chat: $("#chat"), chatEmpty: $("#chat-empty"), input: $("#input"),
-  userSelect: $("#user-select"),
+  userSelect: $("#user-select"), kbSwitch: $("#kb-switch"), curKb: $("#cur-kb"),
   composer: $("#composer"), sendBtn: $("#btn-send"),
   fileInput: $("#file-input"), dirInput: $("#dir-input"),
   btnImport: $("#btn-import"), btnRebuild: $("#btn-rebuild"), btnEval: $("#btn-eval"),
   docUl: $("#doc-ul"), docEmpty: $("#doc-empty"),
   statDocs: $("#stat-docs"), statChunks: $("#stat-chunks"), statTerms: $("#stat-terms"),
-  builtBadge: $("#built-badge"),   evalPanel: $("#eval-panel"),
+  builtBadge: $("#built-badge"), evalPanel: $("#eval-panel"),
   qInfo: $("#q-info"), questionsFile: $("#questions-file"),
   drawer: $("#drawer"), drawerLabel: $("#drawer-label"),
   drawerMeta: $("#drawer-meta"), drawerText: $("#drawer-text"),
   drawerClose: $("#btn-drawer-close"), toast: $("#toast"),
 };
 
+let currentKb = localStorage.getItem("mr.kb") || "main";
 let activeEv = null;
 
 async function api(path, opts = {}) {
@@ -37,7 +38,7 @@ function toast(text, ms = 2600) {
 }
 
 function esc(text) {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return String(text ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function renderCitations(text) {
@@ -52,6 +53,38 @@ function setBusy(busy) {
   els.btnEval.disabled = busy;
 }
 
+/* ---------- 知识库切换 ---------- */
+
+async function refreshKbs() {
+  const { kbs } = await api("/api/kbs");
+  if (!kbs.some((k) => k.kb_id === currentKb)) currentKb = kbs[0]?.kb_id || "main";
+  els.kbSwitch.innerHTML = kbs.map((k) => `
+    <button class="kb-pill ${k.kb_id === currentKb ? "active" : ""}"
+            data-kb="${esc(k.kb_id)}" title="${esc(k.description)}">
+      ${esc(k.name)}
+    </button>`).join("");
+  els.kbSwitch.querySelectorAll(".kb-pill").forEach((pill) => {
+    pill.addEventListener("click", () => setKb(pill.dataset.kb));
+  });
+  els.curKb.textContent =
+    kbs.find((k) => k.kb_id === currentKb)?.name || currentKb;
+}
+
+function setKb(kbId) {
+  if (kbId === currentKb) return;
+  currentKb = kbId;
+  localStorage.setItem("mr.kb", kbId);
+  refreshKbs().catch(() => {});
+  els.chatEmpty.classList.remove("hidden");
+  addMessage("assistant",
+    `<span class="sys-note">已切换到「${esc(els.curKb.textContent)}」——只能检索该库内授权给你的内容</span>`);
+  refreshStatus().catch(() => {});
+  refreshQuestions().catch(() => {});
+  refreshUsers().catch(() => {});
+}
+
+/* ---------- 状态 / 文档 ---------- */
+
 function badgeHtml(status) {
   if (status.built && status.chunks > 0) {
     return '<span class="badge badge-ok" id="built-badge">索引就绪</span>';
@@ -63,7 +96,7 @@ function badgeHtml(status) {
 }
 
 async function refreshStatus() {
-  const status = await api("/api/status");
+  const status = await api(`/api/status?kb_id=${encodeURIComponent(currentKb)}`);
   els.statDocs.textContent = status.docs.length;
   els.statChunks.textContent = status.chunks ?? "—";
   els.statTerms.textContent = status.bm25_terms ?? "—";
@@ -78,7 +111,8 @@ async function refreshStatus() {
       <span class="ev-score">v${doc.version} · ${doc.size} B</span>
       <button class="doc-del" data-id="${esc(doc.id)}" title="删除">×</button>`;
     li.querySelector(".doc-del").addEventListener("click", async () => {
-      await api("/api/delete", { method: "POST", body: JSON.stringify({ document_id: doc.id }) });
+      await api("/api/delete", { method: "POST",
+        body: JSON.stringify({ document_id: doc.id, kb_id: currentKb }) });
       toast(`已删除 ${doc.name}`);
       await refreshStatus();
     });
@@ -90,14 +124,23 @@ async function refreshStatus() {
 }
 
 async function refreshQuestions() {
-  const info = await api("/api/questions");
+  const info = await api(`/api/questions?kb_id=${encodeURIComponent(currentKb)}`);
   if (info.exists) {
     els.qInfo.textContent =
       `${info.name} · ${info.count} 题（可答 ${info.answer_count} / 拒答 ${info.refuse_count}）`;
   } else {
-    els.qInfo.textContent = "暂无题目集，请上传";
+    els.qInfo.textContent = "本库暂无题目集，可上传替换";
   }
 }
+
+async function refreshUsers() {
+  const { users } = await api(`/api/users?kb_id=${encodeURIComponent(currentKb)}`);
+  els.userSelect.innerHTML = users
+    .map((u) => `<option value="${esc(u.user_id)}">${esc(u.display_name)}</option>`)
+    .join("");
+}
+
+/* ---------- 聊天 ---------- */
 
 function addThinking() {
   const msg = document.createElement("div");
@@ -129,11 +172,10 @@ function addMessage(role, html) {
   return msg;
 }
 
-async function renderAnswer(data) {
+function renderAnswer(data) {
   const msg = addMessage("assistant", renderCitations(data.answer));
-  if (data.refusal) {
-    msg.querySelector(".bubble").classList.add("refusal");
-  }
+  if (data.refusal) msg.querySelector(".bubble").classList.add("refusal");
+
   if (data.retried) {
     const note = document.createElement("div");
     note.className = "retry-note";
@@ -188,10 +230,9 @@ async function ask() {
   const thinking = addThinking();
   setBusy(true);
   try {
-    const data = await api("/api/ask", {
-      method: "POST",
-      body: JSON.stringify({ query, user_id: els.userSelect.value }),
-    });
+    const data = await api("/api/ask", { method: "POST",
+      body: JSON.stringify({ query, user_id: els.userSelect.value,
+                             kb_id: currentKb }) });
     thinking.remove();
     renderAnswer(data);
   } catch (error) {
@@ -203,24 +244,39 @@ async function ask() {
   }
 }
 
+/* ---------- 评测 ---------- */
+
+async function waitBuildDone(jobId, timeoutMs = 300000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, 800));
+    try {
+      const cur = await api(`/api/builds/current?kb_id=${encodeURIComponent(currentKb)}`);
+      if (cur.job_id === jobId && (cur.state === "done" || cur.state === "failed")) {
+        return cur;
+      }
+    } catch (_) { /* 任务未注册或已清理 */ }
+  }
+  return null;
+}
+
 async function renderEval() {
   els.btnEval.disabled = true;
   els.evalPanel.classList.remove("hidden");
   els.evalPanel.innerHTML = '<span class="thinking">自测中<span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
   try {
-    const result = await api("/api/eval", { method: "POST", body: "{}" });
+    const result = await api(`/api/eval?kb_id=${encodeURIComponent(currentKb)}`,
+                             { method: "POST", body: "{}" });
     const s = result.summary;
-    const rows = result.rows
-      .map((r) => {
-        const cls = r.ok ? "pass" : "fail";
-        const mark = r.ok ? "PASS" : r.verdict;
-        return `<div class="eval-row">
-          <span class="eval-qid">Q${r.qid}</span>
-          <span class="eval-verdict ${cls}">${mark}</span>
-          <span class="eval-ans">${esc(r.answer).replace(/\n/g, " ").slice(0, 60)}</span>
-        </div>`;
-      })
-      .join("");
+    const rows = result.rows.map((r) => {
+      const cls = r.ok ? "pass" : "fail";
+      const mark = r.ok ? "PASS" : r.verdict;
+      return `<div class="eval-row">
+        <span class="eval-qid">Q${r.qid}</span>
+        <span class="eval-verdict ${cls}">${mark}</span>
+        <span class="eval-ans">${esc(r.answer).replace(/\n/g, " ").slice(0, 60)}</span>
+      </div>`;
+    }).join("");
     els.evalPanel.innerHTML = `
       <div class="eval-summary">
         <span class="chip">能答 ${s.answer_rate}</span>
@@ -235,6 +291,8 @@ async function renderEval() {
     els.btnEval.disabled = false;
   }
 }
+
+/* ---------- 事件绑定 ---------- */
 
 els.composer.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -255,6 +313,7 @@ els.fileInput.addEventListener("change", async () => {
   if (!files.length) return;
   const form = new FormData();
   files.forEach((f) => form.append("files", f));
+  form.append("kb_id", currentKb);
   els.fileInput.value = "";
   try {
     const { saved } = await api("/api/upload", { method: "POST", body: form });
@@ -270,7 +329,7 @@ els.btnImport.addEventListener("click", async () => {
   try {
     const { imported } = await api("/api/import_dir", {
       method: "POST",
-      body: JSON.stringify({ directory: els.dirInput.value.trim() }),
+      body: JSON.stringify({ directory: els.dirInput.value.trim(), kb_id: currentKb }),
     });
     toast(imported.length ? `已导入 ${imported.length} 个文档` : "目录没有新文档");
     await refreshStatus();
@@ -281,27 +340,12 @@ els.btnImport.addEventListener("click", async () => {
   }
 });
 
-async function waitBuildDone(jobId, timeoutMs = 300000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, 800));
-    try {
-      const cur = await api("/api/builds/current");
-      if (cur.job_id === jobId && (cur.state === "done" || cur.state === "failed")) {
-        return cur;
-      }
-    } catch (_) {
-      // 任务尚未注册或已被清理：继续轮询
-    }
-  }
-  return null;
-}
-
 els.btnRebuild.addEventListener("click", async () => {
   setBusy(true);
   els.btnRebuild.textContent = "提交中…";
   try {
-    const job = await api("/api/rebuild", { method: "POST", body: "{}" });
+    const job = await api(`/api/rebuild?kb_id=${encodeURIComponent(currentKb)}`,
+                          { method: "POST", body: "{}" });
     if (job.state === "done") {
       toast("索引已重建");
     } else {
@@ -331,6 +375,7 @@ els.questionsFile.addEventListener("change", async () => {
   if (!file) return;
   const form = new FormData();
   form.append("file", file);
+  form.append("kb_id", currentKb);
   els.questionsFile.value = "";
   try {
     const info = await api("/api/questions_upload", { method: "POST", body: form });
@@ -343,13 +388,7 @@ els.questionsFile.addEventListener("change", async () => {
 
 els.drawerClose.addEventListener("click", () => els.drawer.classList.add("hidden"));
 
-async function refreshUsers() {
-  const { users } = await api("/api/users");
-  els.userSelect.innerHTML = users
-    .map((u) => `<option value="${esc(u.user_id)}">${esc(u.display_name)}</option>`)
-    .join("");
-}
-
-refreshUsers().catch((error) => toast(`用户列表加载失败：${error.message}`, 4000));
-refreshStatus().catch((error) => toast(`初始化失败：${error.message}`, 5000));
+refreshKbs()
+  .then(() => Promise.allSettled([refreshStatus(), refreshUsers()]))
+  .catch((error) => toast(`初始化失败：${error.message}`, 5000));
 els.input.focus();

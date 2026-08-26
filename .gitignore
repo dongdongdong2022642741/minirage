@@ -27,3 +27,5 @@ data/kb/audit.jsonl
 data/kb/acl_report.json
 third_party/
 *.log
+
+data/kbs/

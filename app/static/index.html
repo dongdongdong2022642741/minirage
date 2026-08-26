@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MiniRAG · 知识库问答</title>
+<title>MiniRAG · 多知识库问答</title>
 <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
@@ -12,12 +12,17 @@
     <div class="brand">
       <div class="brand-mark">MR</div>
       <div class="brand-name">MiniRAG</div>
-      <div class="brand-sub">知识库问答</div>
+      <div class="brand-sub">多知识库问答平台</div>
     </div>
+
+    <section class="kb-switch-wrap">
+      <span class="sec-label">挂载的知识库</span>
+      <div id="kb-switch" class="kb-switch"></div>
+    </section>
 
     <section class="kb">
       <div class="kb-head">
-        <span class="sec-label">知识库</span>
+        <span class="sec-label">当前库概览</span>
         <span id="built-badge" class="badge badge-wait">—</span>
       </div>
       <div class="kb-stats">
@@ -28,18 +33,19 @@
 
       <div class="actions">
         <label class="btn btn-primary" for="file-input">上传文档</label>
-        <input type="file" id="file-input" accept=".md,.txt" multiple hidden>
+        <input type="file" id="file-input"
+               accept=".md,.txt,.pdf,.docx,.html,.htm" multiple hidden>
         <div class="dir-row">
-          <input id="dir-input" class="text-input" value="C:\Users\shyh\Desktop\maxkb_test_docs" spellcheck="false">
+          <input id="dir-input" class="text-input" placeholder="服务器目录路径" spellcheck="false">
           <button id="btn-import" class="btn">导入目录</button>
         </div>
-        <button id="btn-rebuild" class="btn">重建索引</button>
+        <button id="btn-rebuild" class="btn btn-ghost">重建索引</button>
       </div>
 
       <div class="doc-list">
         <div class="sec-label">文档</div>
         <ul id="doc-ul"></ul>
-        <div id="doc-empty" class="empty">暂无文档。上传 .md / .txt，或从目录导入。</div>
+        <div id="doc-empty" class="empty">暂无文档。支持 md / txt / pdf / docx / html。</div>
       </div>
 
       <div class="eval">
@@ -56,19 +62,21 @@
 
   <main class="stage">
     <div class="stage-head">
-      <div class="stage-title">问答台</div>
-      <div class="stage-hint">答案中的 [1][2] 高亮标记对应下方证据卡片，点击可查看原文</div>
+      <div>
+        <div class="stage-title">问答台 <span id="cur-kb" class="kb-chip">main</span></div>
+        <div class="stage-hint">答案中的 [1][2] 标记对应下方证据卡片，点击可查看原文；切换身份与知识库即刻生效</div>
+      </div>
+      <select id="user-select" class="text-input user-select" title="提问身份（决定可见文档范围）"></select>
     </div>
 
     <div id="chat" class="chat">
       <div class="chat-empty" id="chat-empty">
         <div class="chat-empty-mark">?</div>
-        <div class="chat-empty-text">输入问题开始提问。<br>回答基于知识库文档，并标注可核查的来源编号。</div>
+        <div class="chat-empty-text">选择知识库与身份后开始提问。<br>回答基于当前库文档，并标注可核查的来源编号。</div>
       </div>
     </div>
 
     <form id="composer" class="composer">
-      <select id="user-select" class="text-input" title="提问身份（决定可见文档范围）"></select>
       <textarea id="input" rows="1" placeholder="输入问题，Enter 发送，Shift+Enter 换行" autocomplete="off"></textarea>
       <button type="submit" class="btn btn-primary" id="btn-send">提问</button>
     </form>
@@ -87,6 +95,6 @@
 </div>
 
 <div id="toast" class="toast hidden"></div>
-<script src="/static/app.js"></script>
+<script src="/static/app.js?v=3"></script>
 </body>
 </html>
