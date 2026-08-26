@@ -53,17 +53,20 @@ def stride_sample(items: list, n: int, seed: int = 42) -> list:
     return shuffled[:n]
 
 
-def retrieve(index, vector_store, query: str, k: int) -> list[tuple[str, str]]:
-    """生产同款：双路召回 -> RRF -> rerank 截断。"""
+def retrieve(index, vector_store, query: str, k: int,
+             gate: float = 0.0) -> list[tuple[str, str]]:
+    """生产同款：双路召回 -> RRF -> rerank 截断；gate 为向量 top1 门控。"""
     bm25_hits = bm25_search(index, query, k=10)
     vector_hits = vector_store.search(query, k=10)
+    if gate > 0 and (not vector_hits or vector_hits[0][1] < gate):
+        return []  # 幻觉门控：与 app.kb._retrieve 同一语义
     hits = rerank(fuse(bm25_hits, vector_hits, k=k, method="rrf"),
                   bm25_hits, vector_hits)[:k]
     return hits
 
 
-def cache_path(split: str, k: int) -> Path:
-    return DATA_DIR / f"rag_cache_{split}_k{k}.json"
+def cache_path(split: str, k: int, gate: float = 0.0) -> Path:
+    return DATA_DIR / f"rag_cache_{split}_k{k}_g{gate}.json"
 
 
 def fingerprint(path_name: str) -> str:
@@ -102,7 +105,7 @@ def answer_query(query: str, evidence: list[tuple[str, str]]) -> tuple[str, bool
 
 def run_split(index, vector_store, doc_text: dict, split: str, kind: str,
               n: int, k: int, cache: dict, cfg_name: str,
-              cpath: Path) -> list[dict]:
+              cpath: Path, gate: float = 0.0) -> list[dict]:
     topics = stride_sample(load_topics(split, kind), n)
     rows = []
     errors = 0
@@ -110,7 +113,7 @@ def run_split(index, vector_store, doc_text: dict, split: str, kind: str,
         entry = cache.get(qid)
         if entry is None:
             try:
-                hits = retrieve(index, vector_store, query, k)
+                hits = retrieve(index, vector_store, query, k, gate=gate)
                 evidence = [(d, doc_text[d]) for d, _ in hits]
                 t0 = time.time()
                 answer, llm_called = answer_query(query, evidence)
@@ -169,11 +172,13 @@ def main() -> int:
     parser.add_argument("--n-rel", type=int, default=30)
     parser.add_argument("--n-nonrel", type=int, default=30)
     parser.add_argument("--k", type=int, default=10)
+    parser.add_argument("--gate", type=float, default=0.0,
+                        help="向量 top1 相似度门控，0=关闭")
     parser.add_argument("--json-out", default=None)
     args = parser.parse_args()
 
-    cfg_name = f"{args.split}_k{args.k}"
-    cpath = cache_path(args.split, args.k)
+    cfg_name = f"{args.split}_k{args.k}_g{args.gate}"
+    cpath = cache_path(args.split, args.k, args.gate)
     cache = load_cache(cpath, fingerprint(cfg_name))
 
     print("加载全量语料与索引缓存（首次约 1 分钟，无 API 成本）...")
@@ -183,14 +188,15 @@ def main() -> int:
 
     print(f"\n== relevant ({args.n_rel}) ==")
     rel_rows = run_split(index, vector_store, doc_text, args.split,
-                         "relevant", args.n_rel, args.k, cache, cfg_name, cpath)
+                         "relevant", args.n_rel, args.k, cache, cfg_name,
+                         cpath, gate=args.gate)
     print(f"== non_relevant ({args.n_nonrel}) ==")
     nonrel_rows = run_split(index, vector_store, doc_text, args.split,
                             "non_relevant", args.n_nonrel, args.k,
-                            cache, cfg_name, cpath)
+                            cache, cfg_name, cpath, gate=args.gate)
 
     report = {
-        "config": {"split": args.split, "k": args.k,
+        "config": {"split": args.split, "k": args.k, "gate": args.gate,
                    "path": "bm25+vector RRF rerank",
                    "temperature": ANSWER_TEMPERATURE},
         "relevant_summary": summarize(rel_rows, "relevant"),

@@ -169,5 +169,27 @@ def DEFAULT_USER_ID_KB():
     return DEFAULT_USER_ID
 
 
+class RelevanceGateTests(unittest.TestCase):
+    def test_gate_blocks_below_threshold_and_passes_above(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch("index.embeddings.embed_texts", unit_embed):
+                kb = KnowledgeBase(Path(tmp))
+                kb.add_uploads([("handbook.md", b"# Handbook\nStable")])
+                kb.rebuild(force=True, embed_fn=unit_embed)
+            doc_id = kb.list_docs()[0]["id"]
+
+            import os
+            # unit_embed 全同向量 -> 相似度恒为 1.0
+            with mock.patch.dict(os.environ, {"KB_RELEVANCE_GATE": "0.9"}):
+                hits, _f = kb._retrieve("Stable", allowed_ids={doc_id})
+                self.assertTrue(hits)
+            with mock.patch.dict(os.environ, {"KB_RELEVANCE_GATE": "1.5"}):
+                hits, _f = kb._retrieve("Stable", allowed_ids={doc_id})
+                self.assertEqual(hits, [])
+            # 默认关闭
+            hits, _f = kb._retrieve("Stable", allowed_ids={doc_id})
+            self.assertTrue(hits)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

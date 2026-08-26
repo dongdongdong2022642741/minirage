@@ -71,9 +71,9 @@ MiniRAG —— 复刻 RAGFlow 检索链路的带引用问答系统
     - 原子代际发布：`cache/generations/gen_{fp}/` 沙箱构建 bm25.pkl + vec/ + manifest.json，`os.replace` 原子更名发布，内存指针最后热切换；构建失败清理沙箱并保留旧索引继续服务（A1 策略）
     - 代际保留策略：仅保留当前与上一代共 2 代目录（B1 策略），全局 vectors 缓存不删
     - 阶段 3 验证：新增 17 条测试（缓存键 4 + 单向量缓存 5 + 批量增量 4 + 原子发布/失败回滚/代际清理 2 + restore 相关 8 条中 2 条索引相关），总测试数 113→136 全绿；实测文档恢复后指纹回到旧值直接命中磁盘缓存，零 Embedding API 调用
-  - [ ] 阶段 4 ACL：引入用户/角色和文档级 allow-list，Chunk 继承文档权限；在召回候选进入融合/生成前过滤；增加同题多身份权限矩阵和越权泄露率
-  - [ ] 阶段 5 异步与运维：入库状态拆分 queued/parsing/chunking/embedding/ready/failed，增加重试、审计日志、P95 延迟、索引耗时和 API 成本
-  - [x] 学习模式恢复点（2026-08-23 更新）：阶段 3 已按"设计拍板→AI实现→用户审查"流程完成；阶段 4 ACL 启动前先训练"权限为什么必须在召回后融合前过滤、不能靠 Prompt 约束"，方案评审通过后再进入实现
+  - [x] 阶段 4 ACL（2026-08-23 完成）：用户-文档白名单（默认拒绝），查询时过滤夹在召回与融合之间并超量取候选 RAW_K×2；允许集与 active 文档求交堵住删除/未重建窗口期泄露；`/api/users` `/api/acl` + 前端身份下拉；权限矩阵题集 `acl_cases.json` + `eval_acl.py` 实测 **34/34、越权泄露率 0/34**；零证据确定性拒答短路（不调 LLM，由矩阵评测 ghost 用例实测发现）
+  - [x] 阶段 5 异步与运维（2026-08-23 完成）：版本状态 queued/parsing/ready/failed + build_jobs 台账 chunking/embedding/publishing/done/failed；单飞后台重建（重复触发 409，构建期沿用旧代际继续服务）；仅网络类错误指数退避重试 ≤3 次（HTTP400 类不重试）；append-only audit.jsonl（ask 事件不落问题原文）；`/api/stats` P95（500 窗口）+ 相对成本模型；`/api/builds` 历史
+  - [x] 学习模式恢复点（2026-08-23 二更）：阶段 4/5 已按"设计拍板→AI实现→用户审查"流程完成并提交（3b98b3d）；评测三线 C/D/E 首跑落地并提交（12f9d6d，详见文末评测小节）；B 线企业题集 v2 自审定稿上线；当前最大杠杆 = 相关性阈值门控压幻觉率（C 线 non_relevant 幻觉率 56.7% → 目标 <20%，且 relevant 能答率损失可控）
 - **评测升级路线（2026-08-22 已定）：**
   - 定位：不以单一总分评价 RAG，拆成检索层、生成层、鲁棒拒答层、企业工程层分别报告；公开基准负责横向可比，企业自建题集负责真实业务验收
   - NoMIRACL 中文继续保留：现有全量检索结果作为基线，负责 Recall@k / MRR；后续补跑官方 relevant/non_relevant 任务，以 Hallucination Rate 和 Error Rate 测“无证据不乱答、有证据能识别”；因缺少完整高质量参考答案，不作为主要端到端答案正确性题集
@@ -132,3 +132,16 @@ MiniRAG —— 复刻 RAGFlow 检索链路的带引用问答系统
 - corpus：37,599 条 passage（JSONL gzip）
 - topics：dev/test × relevant/non_relevant（2 列 TSV）
 - qrels：dev/test × relevant/non_relevant（4 列 TSV）；dev.relevant 393 个 query 有标注
+
+## 评测三线首跑（2026-08-23，均已提交 12f9d6d）
+
+- **C NoMIRACL 拒答评测**（eval_nomiracl_rag.py）：dev 30+30，复用全量索引缓存零嵌入成本，检索走生产同款 RRF+rerank。relevant：能答率 26/30、引用合法 26/26；**non_relevant：幻觉率 17/30 = 56.7%**——检索器总能捞出看似相关的噪声段，模型持噪作答。修复方向：向量 top1 相关性阈值门控（KB_RELEVANCE_GATE）
+- **D CRUD-RAG 分层问答**（eval_crud_rag.py + third_party/CRUD_RAG_data/）：官方 QA 按 ID 反查源文档闭世界入库，192 题包含匹配 54.2%（1Doc 61.2% / 2Docs 38.2% / 3Docs 60%，拒答 15）。口径注记：包含匹配严于官方 LLM-judge 且语料为闭世界，数字不可与论文直接对比，定位为内部回归基线；2Docs 凹陷待归因
+- **E RAGAS 四指标校准**（eval_ragas.py，ragas==0.2.15 + DeepSeek judge + bge-m3 嵌入）：10 题校准集 faithfulness .95 / answer_relevancy .90 / context_precision .95 / context_recall 1.0；低分人工抽检项：qid1 context_precision=.5、qid14 faithfulness=.5（docs/EVAL_RAGAS.json rows）
+- **B 企业题集 v2 上线**：60 题 = 48 可答（数字题全部中文数字双保险词）+ 12 near-miss 拒答；参考答案 questions_answers.json 48 条（RAGAS/人工校准基准）；旧版备份 questions_v1.md。待办：v2 全量 run_eval 新基线
+
+### 幻觉门控实验（2026-08-23，负结果 + 方法论发现）
+- 实现：KB_RELEVANCE_GATE 环境变量 + eval_nomiracl_rag.py --gate，向量 top1 低于阈值即清空证据走确定性拒答（机制保留，默认关闭）
+- 结果：gate=0.35 时 non_relevant 幻觉率不降反升（14/30 vs 基线 14/30 同批噪声内波动）——实测 dev 60 查询 top1 相似度分布：relevant 中位 0.691 / non_relevant 中位 0.654，重叠严重；bge-m3 余弦对任意中文查询-段落基线偏高，单一绝对阈值原理上不可分
+- 方法论发现①：同配置重跑幻觉率 17↔14（±10pp），30 样本 + temperature=0.1 的噪声地板过高；后续结论性评测须 n≥50 且 temperature=0
+- 下一步杠杆（按性价比）：①top1 与其余 topk 的相对margin 门控（自适应基线）②引入真正的交叉编码器 reranker 用其分数做门控 ③回答前 LLM 自评证据相关性（多一次调用换拒答精度）

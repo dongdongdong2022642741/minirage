@@ -51,6 +51,19 @@ TEMPERATURE = 0.1
 INDEX_SCHEMA_VERSION = "enterprise-v1"
 
 
+def relevance_gate() -> float:
+    """向量通道最高相似度门控（幻觉控制）：top1 低于阈值视为无相关证据。
+
+    运行时读 env 以支持单变量实验（KB_RELEVANCE_GATE=0 关闭）；
+    只约束向量分数的语义直觉尺度（cosine 0~1），BM25 无界分不适用。
+    """
+    raw = os.getenv("KB_RELEVANCE_GATE", "0").strip()
+    try:
+        return max(0.0, float(raw))
+    except ValueError:
+        return 0.0
+
+
 @dataclass(frozen=True)
 class IndexedChunk:
     chunk_id: str
@@ -579,6 +592,12 @@ class KnowledgeBase:
             bm25_hits, dropped_bm25 = keep(bm25_hits)
             vector_hits, dropped_vec = keep(vector_hits)
             filtered = dropped_bm25 + dropped_vec
+
+        gate = relevance_gate()
+        if gate > 0:
+            top_vec = max((score for _cid, score in vector_hits), default=0.0)
+            if top_vec < gate:
+                return [], filtered  # 幻觉门控：最高向量相似度仍低于阈值 -> 视为无证据
 
         hits = rerank(fuse(bm25_hits, vector_hits, k=TOP_FOR_ANSWER, method="rrf"),
                       bm25_hits, vector_hits)[:TOP_FOR_ANSWER]
