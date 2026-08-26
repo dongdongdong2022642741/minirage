@@ -4,6 +4,7 @@ const $ = (sel) => document.querySelector(sel);
 
 const els = {
   chat: $("#chat"), chatEmpty: $("#chat-empty"), input: $("#input"),
+  userSelect: $("#user-select"),
   composer: $("#composer"), sendBtn: $("#btn-send"),
   fileInput: $("#file-input"), dirInput: $("#dir-input"),
   btnImport: $("#btn-import"), btnRebuild: $("#btn-rebuild"), btnEval: $("#btn-eval"),
@@ -128,7 +129,7 @@ function addMessage(role, html) {
   return msg;
 }
 
-function renderAnswer(data) {
+async function renderAnswer(data) {
   const msg = addMessage("assistant", renderCitations(data.answer));
   if (data.refusal) {
     msg.querySelector(".bubble").classList.add("refusal");
@@ -137,6 +138,13 @@ function renderAnswer(data) {
     const note = document.createElement("div");
     note.className = "retry-note";
     note.textContent = "首轮回答疑似误拒，已按检索提示重试一次";
+    msg.appendChild(note);
+  }
+  if (data.acl && data.acl.filtered > 0) {
+    const note = document.createElement("div");
+    note.className = "retry-note";
+    note.textContent =
+      `已按身份「${data.acl.user_id}」过滤 ${data.acl.filtered} 条无权限候选`;
     msg.appendChild(note);
   }
 
@@ -180,7 +188,10 @@ async function ask() {
   const thinking = addThinking();
   setBusy(true);
   try {
-    const data = await api("/api/ask", { method: "POST", body: JSON.stringify({ query }) });
+    const data = await api("/api/ask", {
+      method: "POST",
+      body: JSON.stringify({ query, user_id: els.userSelect.value }),
+    });
     thinking.remove();
     renderAnswer(data);
   } catch (error) {
@@ -270,12 +281,40 @@ els.btnImport.addEventListener("click", async () => {
   }
 });
 
+async function waitBuildDone(jobId, timeoutMs = 300000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, 800));
+    try {
+      const cur = await api("/api/builds/current");
+      if (cur.job_id === jobId && (cur.state === "done" || cur.state === "failed")) {
+        return cur;
+      }
+    } catch (_) {
+      // 任务尚未注册或已被清理：继续轮询
+    }
+  }
+  return null;
+}
+
 els.btnRebuild.addEventListener("click", async () => {
   setBusy(true);
-  els.btnRebuild.textContent = "构建中…";
+  els.btnRebuild.textContent = "提交中…";
   try {
-    await api("/api/rebuild", { method: "POST", body: "{}" });
-    toast("索引已重建");
+    const job = await api("/api/rebuild", { method: "POST", body: "{}" });
+    if (job.state === "done") {
+      toast("索引已重建");
+    } else {
+      toast(`构建已提交后台（${String(job.job_id).slice(0, 8)}…），可继续提问`);
+      const final = await waitBuildDone(job.job_id);
+      if (final && final.state === "done") {
+        toast(`索引就绪：${final.chunks} 块，复用 ${final.reused}，新算 ${final.embedded}`);
+      } else if (final && final.state === "failed") {
+        toast(`构建失败：${final.error || "未知错误"}`, 6000);
+      } else {
+        toast("构建仍在进行，可稍后刷新查看", 4000);
+      }
+    }
   } catch (error) {
     toast(`重建失败：${error.message}`, 4000);
   } finally {
@@ -304,5 +343,13 @@ els.questionsFile.addEventListener("change", async () => {
 
 els.drawerClose.addEventListener("click", () => els.drawer.classList.add("hidden"));
 
+async function refreshUsers() {
+  const { users } = await api("/api/users");
+  els.userSelect.innerHTML = users
+    .map((u) => `<option value="${esc(u.user_id)}">${esc(u.display_name)}</option>`)
+    .join("");
+}
+
+refreshUsers().catch((error) => toast(`用户列表加载失败：${error.message}`, 4000));
 refreshStatus().catch((error) => toast(`初始化失败：${error.message}`, 5000));
 els.input.focus();

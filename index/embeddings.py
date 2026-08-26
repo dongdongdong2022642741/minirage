@@ -11,8 +11,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import random
 import shutil
 import tempfile
+import time
 import uuid
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -24,6 +26,11 @@ API_URL = "https://api.siliconflow.cn/v1/embeddings"
 MODEL = "BAAI/bge-m3"
 EMBEDDING_DIM = 1024
 BATCH_SIZE = 64
+
+# R1 重试策略：仅网络类瞬时错误退避重试，参数类错误立即失败
+EMBED_MAX_ATTEMPTS = 3
+EMBED_BACKOFF_BASE = 0.5
+RETRYABLE_HTTP_CODES = {429, 500, 502, 503, 504}
 
 
 def embedding_cache_key(model: str, text: str) -> str:
@@ -127,23 +134,39 @@ def _embed_batch(api_key: str, texts: list[str]) -> list[list[float]]:
         },
         method="POST",
     )
-    try:
-        with urlopen(request, timeout=60) as response:
-            result = json.load(response)
-    except HTTPError as error:
-        detail = error.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"SiliconFlow returned HTTP {error.code}: {detail}") from error
-    except URLError as error:
-        raise RuntimeError(f"Could not reach SiliconFlow API: {error.reason}") from error
-
-    data = result.get("data")
-    if not isinstance(data, list) or len(data) != len(texts):
-        raise RuntimeError(f"Unexpected embeddings response: {result}")
-    vectors = [item["embedding"] for item in data]
-    for vec in vectors:
-        if len(vec) != EMBEDDING_DIM:
-            raise RuntimeError(f"Expected dim {EMBEDDING_DIM}, got {len(vec)}")
-    return vectors
+    last_error: RuntimeError | None = None
+    for attempt in range(EMBED_MAX_ATTEMPTS):
+        try:
+            with urlopen(request, timeout=60) as response:
+                result = json.load(response)
+            data = result.get("data")
+            if not isinstance(data, list) or len(data) != len(texts):
+                # 响应形状错误是永久性问题，不重试
+                raise RuntimeError(f"Unexpected embeddings response: {result}")
+            vectors = [item["embedding"] for item in data]
+            for vec in vectors:
+                if len(vec) != EMBEDDING_DIM:
+                    raise RuntimeError(f"Expected dim {EMBEDDING_DIM}, got {len(vec)}")
+            return vectors
+        except HTTPError as error:
+            detail = error.read().decode("utf-8", errors="replace")
+            if error.code not in RETRYABLE_HTTP_CODES:
+                raise RuntimeError(
+                    f"SiliconFlow returned HTTP {error.code}: {detail}") from error
+            retryable = RuntimeError(
+                f"SiliconFlow returned HTTP {error.code} (attempt {attempt + 1}): {detail}"
+            )
+            retryable.__cause__ = error
+            last_error = retryable
+        except URLError as error:
+            transient = RuntimeError(
+                f"Could not reach SiliconFlow API (attempt {attempt + 1}): {error.reason}"
+            )
+            transient.__cause__ = error
+            last_error = transient
+        if attempt < EMBED_MAX_ATTEMPTS - 1:
+            time.sleep(EMBED_BACKOFF_BASE * (2 ** attempt) * (0.5 + random.random()))
+    raise last_error  # type: ignore[misc]
 
 
 def _row_normalize(matrix: np.ndarray) -> np.ndarray:

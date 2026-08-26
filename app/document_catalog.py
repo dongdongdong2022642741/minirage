@@ -20,6 +20,10 @@ class DocumentStateError(RuntimeError):
     """Raised when an operation conflicts with the document's current state."""
 
 
+DEFAULT_USER_ID = "admin"
+DEFAULT_USER_NAME = "管理员"
+
+
 class DocumentCatalog:
     """Persistent document identity and immutable content versions."""
 
@@ -30,6 +34,7 @@ class DocumentCatalog:
         self.root.mkdir(parents=True, exist_ok=True)
         self.blob_dir.mkdir(parents=True, exist_ok=True)
         self._init_schema()
+        self._seed_default_user()
 
     def _connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(self.db_path)
@@ -75,6 +80,28 @@ class DocumentCatalog:
                     created_at REAL NOT NULL,
                     UNIQUE(document_id, version_number),
                     FOREIGN KEY(document_id) REFERENCES documents(document_id)
+                );
+                CREATE TABLE IF NOT EXISTS acl_users (
+                    user_id TEXT PRIMARY KEY,
+                    display_name TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS user_documents (
+                    user_id TEXT NOT NULL REFERENCES acl_users(user_id),
+                    document_id TEXT NOT NULL REFERENCES documents(document_id),
+                    PRIMARY KEY (user_id, document_id)
+                );
+                CREATE TABLE IF NOT EXISTS build_jobs (
+                    job_id TEXT PRIMARY KEY,
+                    fingerprint TEXT,
+                    state TEXT NOT NULL,
+                    started_at REAL NOT NULL,
+                    finished_at REAL,
+                    chunks INTEGER,
+                    embedded INTEGER,
+                    reused INTEGER,
+                    embed_calls INTEGER,
+                    embed_chars INTEGER,
+                    error TEXT
                 );
                 CREATE INDEX IF NOT EXISTS idx_versions_document
                     ON document_versions(document_id, version_number);
@@ -145,19 +172,19 @@ class DocumentCatalog:
             if document is None:
                 db.execute(
                     "INSERT INTO documents(document_id, name, status, created_at, updated_at) "
-                    "VALUES (?, ?, 'processing', ?, ?)",
+                    "VALUES (?, ?, 'parsing', ?, ?)",
                     (document_id, name, now, now),
                 )
             else:
                 db.execute(
-                    "UPDATE documents SET status = 'processing', deleted_at = NULL, "
+                    "UPDATE documents SET status = 'parsing', deleted_at = NULL, "
                     "updated_at = ?, last_error = NULL WHERE document_id = ?",
                     (now, document_id),
                 )
             db.execute(
                 "INSERT INTO document_versions(version_id, document_id, version_number, "
                 "content_hash, size_bytes, suffix, stored_path, source_type, source_uri, "
-                "status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'processing', ?)",
+                "status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'queued', ?)",
                 (
                     version_id,
                     document_id,
@@ -170,6 +197,10 @@ class DocumentCatalog:
                     source_uri,
                     now,
                 ),
+            )
+            db.execute(
+                "UPDATE document_versions SET status = 'parsing' WHERE version_id = ?",
+                (version_id,),
             )
 
         try:
@@ -198,6 +229,10 @@ class DocumentCatalog:
                 "UPDATE documents SET status = 'ready', current_version_id = ?, "
                 "updated_at = ?, last_error = NULL WHERE document_id = ?",
                 (version_id, time.time(), document_id),
+            )
+            db.execute(
+                "INSERT OR IGNORE INTO user_documents(user_id, document_id) VALUES (?, ?)",
+                (DEFAULT_USER_ID, document_id),
             )
         return self.get(document_id)
 
@@ -284,6 +319,102 @@ class DocumentCatalog:
                 f"deleted document has no restorable version: {document_id}"
             )
         return self.get(document_id)
+
+    # ---------- ACL（C1 白名单 / E1 默认拒绝） ----------
+
+    def _seed_default_user(self) -> None:
+        """Bootstrap for default-deny: admin owns every active ready document.
+
+        Re-synced on every startup (self-healing). Trade-off: the ingest
+        identity cannot be revoked within a running deployment.
+        """
+        with self._database() as db:
+            db.execute(
+                "INSERT OR IGNORE INTO acl_users(user_id, display_name) VALUES (?, ?)",
+                (DEFAULT_USER_ID, DEFAULT_USER_NAME),
+            )
+            db.execute(
+                "INSERT OR IGNORE INTO user_documents(user_id, document_id) "
+                "SELECT ?, document_id FROM documents "
+                "WHERE deleted_at IS NULL AND status = 'ready'",
+                (DEFAULT_USER_ID,),
+            )
+
+    def ensure_user(self, user_id: str, display_name: str = "") -> None:
+        user_id = user_id.strip()
+        if not user_id:
+            raise ValueError("user_id 不能为空")
+        with self._database() as db:
+            db.execute(
+                "INSERT OR IGNORE INTO acl_users(user_id, display_name) VALUES (?, ?)",
+                (user_id, display_name.strip() or user_id),
+            )
+
+    def grant(self, user_id: str, document_id: str) -> None:
+        with self._database() as db:
+            if db.execute("SELECT 1 FROM acl_users WHERE user_id = ?",
+                          (user_id,)).fetchone() is None:
+                raise ValueError(f"用户不存在: {user_id}")
+            if db.execute("SELECT 1 FROM documents WHERE document_id = ?",
+                          (document_id,)).fetchone() is None:
+                raise ValueError(f"文档不存在: {document_id}")
+            db.execute(
+                "INSERT OR IGNORE INTO user_documents(user_id, document_id) VALUES (?, ?)",
+                (user_id, document_id),
+            )
+
+    def revoke(self, user_id: str, document_id: str) -> bool:
+        with self._database() as db:
+            changed = db.execute(
+                "DELETE FROM user_documents WHERE user_id = ? AND document_id = ?",
+                (user_id, document_id),
+            ).rowcount
+        return changed == 1
+
+    def allowed_document_ids(self, user_id: str) -> set[str]:
+        with self._database() as db:
+            rows = db.execute(
+                "SELECT document_id FROM user_documents WHERE user_id = ?", (user_id,)
+            ).fetchall()
+        return {row["document_id"] for row in rows}
+
+    def list_users(self) -> list[dict]:
+        with self._database() as db:
+            rows = db.execute(
+                "SELECT user_id, display_name FROM acl_users ORDER BY user_id"
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    # ---------- 构建任务台账（A1 两段式状态机：chunking/embedding/publishing） ----------
+
+    def start_build_job(self, job_id: str, fingerprint: str) -> None:
+        with self._database() as db:
+            db.execute(
+                "INSERT INTO build_jobs(job_id, fingerprint, state, started_at) "
+                "VALUES (?, ?, 'chunking', ?)",
+                (job_id, fingerprint, time.time()),
+            )
+
+    def update_build_job(self, job_id: str, **fields) -> None:
+        if not fields:
+            return
+        assignments = ", ".join(f"{key} = ?" for key in fields)
+        values = list(fields.values()) + [job_id]
+        with self._database() as db:
+            db.execute(f"UPDATE build_jobs SET {assignments} WHERE job_id = ?", values)
+
+    def finish_build_job(self, job_id: str, state: str, error: str | None = None,
+                         **counts) -> None:
+        fields = {"state": state, "finished_at": time.time(), "error": error, **counts}
+        self.update_build_job(job_id, **fields)
+
+    def recent_build_jobs(self, limit: int = 10) -> list[dict]:
+        with self._database() as db:
+            rows = db.execute(
+                "SELECT * FROM build_jobs ORDER BY started_at DESC LIMIT ?",
+                (max(1, limit),),
+            ).fetchall()
+        return [dict(row) for row in rows]
 
     def active_versions(self) -> list[dict]:
         return [

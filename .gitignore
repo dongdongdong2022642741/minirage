@@ -23,4 +23,7 @@ data/nomiracl/chinese/bm25_*.pkl
 data/nomiracl/chinese/vecstore_*/
 data/nomiracl/chinese/*cache*.json
 data/nomiracl/chinese/query_embeddings_*
+data/kb/audit.jsonl
+data/kb/acl_report.json
+third_party/
 *.log

@@ -211,7 +211,7 @@ class KnowledgeBaseLifecycleTests(unittest.TestCase):
             # 4. 关键验证：构建虽然失败，但原内存中的第一代索引依然完好无损，且没有残留脏目录
             self.assertIsNotNone(kb._bm25)
             self.assertIsNotNone(kb._vector)
-            hits = kb._retrieve("Handbook")
+            hits, _filtered = kb._retrieve("Handbook")
             self.assertTrue(len(hits) > 0)
             self.assertEqual(hits[0][0].label, "handbook.md · Handbook")
 

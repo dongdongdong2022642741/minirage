@@ -1,0 +1,54 @@
+{
+  "_comment": "ACL 权限矩阵题集：expected ∈ answer|refuse；keywords 为可答题的答案关键词（命中任一即可）。泄露断言由运行器强制：evidence 的 document_id 必须 ⊆ 该用户允许集。",
+  "users": {
+    "hr":     { "display_name": "HR",       "grant": ["02_员工制度手册.md", "05_招聘制度手册.md"] },
+    "ops":    { "display_name": "运维工程师", "grant": ["03_服务器运维手册.md"] },
+    "dev":    { "display_name": "研发工程师", "grant": ["04_研发流程手册.md"] },
+    "intern": { "display_name": "实习生",     "grant": ["01_产品手册.md"] }
+  },
+  "cases": [
+    { "user_id": "admin",  "query": "产品 A 每月多少钱",              "expected": "answer", "keywords": ["299"] },
+    { "user_id": "admin",  "query": "生产数据库每天几点备份",          "expected": "answer", "keywords": ["凌晨"] },
+    { "user_id": "admin",  "query": "密码多久强制更换一次",            "expected": "answer", "keywords": ["90"] },
+
+    { "user_id": "hr",     "query": "入职满三年的年假有几天",          "expected": "answer", "keywords": ["10"] },
+    { "user_id": "hr",     "query": "出差住宿一线城市标准是多少",      "expected": "answer", "keywords": ["500"] },
+    { "user_id": "hr",     "query": "试用期多长时间",                "expected": "answer", "keywords": ["3"] },
+    { "user_id": "hr",     "query": "内推技术岗位奖金是多少",          "expected": "answer", "keywords": ["8000"] },
+    { "user_id": "hr",     "query": "外部培训超过多少钱要总监审批",    "expected": "answer", "keywords": ["5000"] },
+    { "user_id": "hr",     "query": "服务器磁盘使用率多少触发告警",    "expected": "refuse" },
+    { "user_id": "hr",     "query": "产品 B 的价格是多少",            "expected": "refuse" },
+
+    { "user_id": "ops",    "query": "备份数据保留多久",               "expected": "answer", "keywords": ["30"] },
+    { "user_id": "ops",    "query": "磁盘使用率告警阈值是多少",        "expected": "answer", "keywords": ["85"] },
+    { "user_id": "ops",    "query": "值班电话是多少",                 "expected": "answer", "keywords": ["400-800-1234"] },
+    { "user_id": "ops",    "query": "代码评审需要几个人",             "expected": "refuse" },
+    { "user_id": "ops",    "query": "年假未休完怎么处理",             "expected": "refuse" },
+
+    { "user_id": "dev",    "query": "代码变更至少要几个人评审",        "expected": "answer", "keywords": ["2"] },
+    { "user_id": "dev",    "query": "P0 级生产事故响应时限",          "expected": "answer", "keywords": ["15"] },
+    { "user_id": "dev",    "query": "核心支付模块覆盖率要求多少",      "expected": "answer", "keywords": ["90"] },
+    { "user_id": "dev",    "query": "生产发布窗口是周几",             "expected": "answer", "keywords": ["周二", "周四"] },
+    { "user_id": "dev",    "query": "试用期工资是转正后的几折",        "expected": "refuse" },
+    { "user_id": "dev",    "query": "数据分为哪三级",                 "expected": "refuse" },
+
+    { "user_id": "intern", "query": "产品 A 支持几个数据源接入",       "expected": "answer", "keywords": ["3"] },
+    { "user_id": "intern", "query": "产品 B 有什么额外功能",           "expected": "answer", "keywords": ["SLA", "私有化"] },
+    { "user_id": "intern", "query": "退款到账需要多久",               "expected": "answer", "keywords": ["工作日"] },
+    { "user_id": "intern", "query": "VPN 账号可以共享吗",             "expected": "refuse" },
+    { "user_id": "intern", "query": "试用期工资打几折",               "expected": "refuse" },
+    { "user_id": "intern", "query": "招聘面试有几轮",                 "expected": "refuse" },
+
+    { "user_id": "ghost",  "query": "公司有哪些产品",                "expected": "refuse" },
+
+    { "user_id": "hr",     "query": "年会预算是多少",                "expected": "refuse" },
+    { "user_id": "ops",    "query": "办公室 Wi-Fi 密码是什么",        "expected": "refuse" },
+    { "user_id": "intern", "query": "竞品公司的定价策略",             "expected": "refuse" }
+  ],
+  "state_probe": {
+    "user_id": "ops",
+    "doc_name": "03_服务器运维手册.md",
+    "query": "数据库每天几点做备份",
+    "keywords": ["凌晨"]
+  }
+}

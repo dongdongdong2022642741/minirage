@@ -19,10 +19,14 @@ import pickle
 import re
 import shutil
 import sys
+import threading
 import time
 import uuid
+from collections import deque
 from dataclasses import dataclass, replace
 from pathlib import Path
+
+from app.audit import AuditLog
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -30,13 +34,19 @@ if str(ROOT) not in sys.path:
 
 from deepseek_chat import ask_deepseek
 from index import IndexBuilder, VectorStore, Searcher, fuse, rerank
-from index.embeddings import MODEL as EMBEDDING_MODEL, build_with_cache
+from index import embeddings as _embeddings
+from index.embeddings import (
+    MODEL as EMBEDDING_MODEL,
+    build_with_cache,
+    embed_texts,
+)
 from docparser.loader import SUPPORTED_SUFFIXES, parse_file
 from chunking.structured import chunk_structured
-from app.document_catalog import DocumentCatalog
+from app.document_catalog import DEFAULT_USER_ID, DocumentCatalog
 
 TOP_FOR_ANSWER = 5
 RAW_K = 10
+ACL_OVERFETCH = 2
 TEMPERATURE = 0.1
 INDEX_SCHEMA_VERSION = "enterprise-v1"
 
@@ -146,10 +156,45 @@ class KnowledgeBase:
         self.generations_dir.mkdir(parents=True, exist_ok=True)
         self.catalog = DocumentCatalog(self.root)
         self.catalog.migrate_directory(self.docs_dir, SUPPORTED_SUFFIXES)
+        self.audit = AuditLog(self.root / "audit.jsonl")
         self._bm25 = None
         self._vector = None
         self._chunks: dict[str, IndexedChunk] = {}
         self._fingerprint_cache: str | None = None
+        # ---- 阶段 5 运行时状态（进程内）----
+        self._build_lock = threading.Lock()
+        self._current_job: dict | None = None
+        self._ask_latencies: deque[float] = deque(maxlen=500)
+        self._llm_calls = 0
+        self._embed_calls = 0
+        self._embed_chars = 0
+        # 相对成本模型常量：非精确账单，用于横向比较
+        self.EMBED_YUAN_PER_1K_CHARS = 0.0007
+        self.LLM_YUAN_PER_CALL = 0.01
+
+    def _chat(self, prompt: str, retry: bool = False) -> str:
+        """DeepSeek 调用的唯一入口：计数 + 审计不落问题原文。"""
+        self._llm_calls += 1
+        return ask_deepseek(prompt, temperature=TEMPERATURE)
+
+    def opstats(self) -> dict:
+        latencies = sorted(self._ask_latencies)
+        p95 = latencies[int(0.95 * (len(latencies) - 1))] if latencies else None
+        last_job = self.catalog.recent_build_jobs(1)
+        cost = (
+            self._embed_chars / 1000 * self.EMBED_YUAN_PER_1K_CHARS
+            + self._llm_calls * self.LLM_YUAN_PER_CALL
+        )
+        return {
+            "asks": len(self._ask_latencies),
+            "p95_ms": round(p95 * 1000, 1) if p95 is not None else None,
+            "llm_calls": self._llm_calls,
+            "embed_calls": self._embed_calls,
+            "embed_chars": self._embed_chars,
+            "estimated_cost_yuan": round(cost, 4),
+            "last_build": last_job[0] if last_job else None,
+            "note": "进程内累计；成本为相对模型非精确账单",
+        }
 
     # ---------- 文档管理 ----------
 
@@ -175,8 +220,13 @@ class KnowledgeBase:
             name = Path(name).name
             if Path(name).suffix.lower() not in SUPPORTED_SUFFIXES or not data:
                 continue
-            self.catalog.ingest(name, data, "upload")
-            saved.append(name)
+            try:
+                self.catalog.ingest(name, data, "upload")
+                saved.append(name)
+                self.audit.record("upload", name=name, ok=True)
+            except ValueError as error:
+                self.audit.record("upload", name=name, ok=False, error=str(error))
+                raise
         return saved
 
     def import_dir(self, directory: str) -> list[str]:
@@ -195,11 +245,13 @@ class KnowledgeBase:
         deleted = self.catalog.delete(document_id)
         if deleted:
             self._fingerprint_cache = None
+            self.audit.record("delete", document_id=document_id)
         return deleted
 
     def restore_document(self, document_id: str) -> dict:
         restored = self.catalog.restore(document_id)
         self._fingerprint_cache = None
+        self.audit.record("restore", document_id=document_id)
         return self._public_document(restored)
 
     def document_versions(self, document_id: str) -> list[dict]:
@@ -331,82 +383,151 @@ class KnowledgeBase:
         temp_meta.write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
         os.replace(temp_meta, self.cache_dir / "meta.json")
 
-    def rebuild(self, force: bool = False, embed_fn=None) -> dict:
-        """Atomic generation build & publication with chunk-level vector reuse."""
+    def _counting_embed(self, embed_fn):
+        """包装 embed 函数：累计会话级调用次数与字符数（相对成本模型）。"""
+        def wrapped(texts):
+            self._embed_calls += 1
+            self._embed_chars += sum(len(t) for t in texts)
+            return embed_fn(texts)
+        return wrapped
+
+    def rebuild(self, force: bool = False, embed_fn=None,
+                job_id: str | None = None) -> dict:
+        """原子代际构建与发布；job_id 非 None 时由后台线程驱动并更新实时状态。"""
+        own_thread = job_id is not None
+        if not own_thread:
+            job_id = uuid.uuid4().hex
+
+        started = time.time()
         fp = self._fingerprint()
         if not force and fp == self._fingerprint_cache:
+            if own_thread:
+                self._current_job["state"] = "done"
             return self.status()
 
-        indexed_chunks = self._load_chunks()
-        if not indexed_chunks:
-            raise ValueError("知识库为空：请先上传文档或导入目录")
-        chunks = [(chunk.chunk_id, chunk.text) for chunk in indexed_chunks]
+        def set_state(state: str) -> None:
+            if own_thread:
+                self._current_job["state"] = state
+            self.catalog.update_build_job(job_id, state=state)
 
-        gen_dir = self._generation_dir(fp)
-        bm25_file = gen_dir / "bm25.pkl"
-        vec_dir = gen_dir / "vec"
+        self.catalog.start_build_job(job_id, fp)
+        embed_before = (self._embed_calls, self._embed_chars)
+        try:
+            set_state("chunking")
+            indexed_chunks = self._load_chunks()
+            if not indexed_chunks:
+                raise ValueError("知识库为空：请先上传文档或导入目录")
+            chunks = [(chunk.chunk_id, chunk.text) for chunk in indexed_chunks]
 
-        # 1. 检查当前代际目录是否已完整就绪
-        if bm25_file.is_file() and (vec_dir / "matrix.npy").is_file():
-            new_bm25 = pickle.loads(bm25_file.read_bytes())
-            new_vector = VectorStore.load(vec_dir)
-            print(f"kb: loaded generation for {fp}")
-        else:
-            # 2. 隔离沙箱构建：在临时目录生成全量资产
-            tmp_gen = self.generations_dir / f".gen_{fp}.{uuid.uuid4().hex}.tmp"
-            tmp_vec = tmp_gen / "vec"
-            tmp_gen.mkdir(parents=True, exist_ok=True)
-            try:
-                new_bm25 = IndexBuilder().build(chunks)
-                # 使用 chunk 向量缓存构建，未命中才调用 embedding
-                if embed_fn is not None:
-                    new_vector, _stats = build_with_cache(chunks, self.vector_cache_dir, embed_fn=embed_fn)
-                else:
-                    new_vector, _stats = build_with_cache(chunks, self.vector_cache_dir)
-                
-                (tmp_gen / "bm25.pkl").write_bytes(pickle.dumps(new_bm25))
-                new_vector.save(tmp_vec)
-                manifest = {
-                    "fingerprint": fp,
-                    "chunks": len(chunks),
-                    "bm25_terms": len(new_bm25.postings),
-                    "created_at": time.time(),
-                }
-                (tmp_gen / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
-                
-                # 3. 原子更名发布
-                if gen_dir.exists():
-                    shutil.rmtree(gen_dir, ignore_errors=True)
-                os.replace(tmp_gen, gen_dir)
-                print(f"kb: built + published atomic generation for {fp}")
-            except Exception:
-                # A1 策略：构建异常清理临时沙箱，保留原内存与旧索引不受损
-                shutil.rmtree(tmp_gen, ignore_errors=True)
-                raise
+            gen_dir = self._generation_dir(fp)
+            bm25_file = gen_dir / "bm25.pkl"
+            vec_dir = gen_dir / "vec"
 
-        # 4. 内存指针热切换
-        self._bm25 = new_bm25
-        self._vector = new_vector
-        self._chunks = {chunk.chunk_id: chunk for chunk in indexed_chunks}
-        
-        # 记录上一代指纹以保留 2 代
-        old_meta = self._load_meta()
-        prior_fp = old_meta.get("fingerprint")
-        keep_fps = [fp]
-        if prior_fp and prior_fp != fp:
-            keep_fps.append(prior_fp)
+            # 1. 检查当前代际目录是否已完整就绪
+            if bm25_file.is_file() and (vec_dir / "matrix.npy").is_file():
+                new_bm25 = pickle.loads(bm25_file.read_bytes())
+                new_vector = VectorStore.load(vec_dir)
+                stats = {"total": len(chunks), "reused": len(chunks), "embedded": 0}
+                print(f"kb: loaded generation for {fp}")
+            else:
+                # 2. 隔离沙箱构建：在临时目录生成全量资产
+                set_state("embedding")
+                tmp_gen = self.generations_dir / f".gen_{fp}.{uuid.uuid4().hex}.tmp"
+                tmp_vec = tmp_gen / "vec"
+                tmp_gen.mkdir(parents=True, exist_ok=True)
+                try:
+                    new_bm25 = IndexBuilder().build(chunks)
+                    # 动态查模块属性：保证单测 mock.patch("index.embeddings.embed_texts") 生效
+                    base_embed = embed_fn or _embeddings.embed_texts
+                    counting = self._counting_embed(base_embed)
+                    new_vector, stats = build_with_cache(
+                        chunks, self.vector_cache_dir, embed_fn=counting)
 
-        self._save_meta(fp, len(chunks), len(new_bm25.postings))
-        self._fingerprint_cache = fp
+                    (tmp_gen / "bm25.pkl").write_bytes(pickle.dumps(new_bm25))
+                    new_vector.save(tmp_vec)
+                    manifest = {
+                        "fingerprint": fp,
+                        "chunks": len(chunks),
+                        "bm25_terms": len(new_bm25.postings),
+                        "created_at": time.time(),
+                    }
+                    (tmp_gen / "manifest.json").write_text(
+                        json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
 
-        # 5. B1 策略：清理超过 2 代的历史目录
-        self._cleanup_old_generations(keep_fps)
+                    # 3. 原子更名发布
+                    set_state("publishing")
+                    if gen_dir.exists():
+                        shutil.rmtree(gen_dir, ignore_errors=True)
+                    os.replace(tmp_gen, gen_dir)
+                    print(f"kb: built + published atomic generation for {fp}")
+                except Exception:
+                    # A1 策略：构建异常清理临时沙箱，保留原内存与旧索引不受损
+                    shutil.rmtree(tmp_gen, ignore_errors=True)
+                    raise
 
-        return self.status()
+            # 4. 内存指针热切换
+            self._bm25 = new_bm25
+            self._vector = new_vector
+            self._chunks = {chunk.chunk_id: chunk for chunk in indexed_chunks}
+
+            old_meta = self._load_meta()
+            prior_fp = old_meta.get("fingerprint")
+            keep_fps = [fp]
+            if prior_fp and prior_fp != fp:
+                keep_fps.append(prior_fp)
+
+            self._save_meta(fp, len(chunks), len(new_bm25.postings))
+            self._fingerprint_cache = fp
+            self._cleanup_old_generations(keep_fps)
+
+            duration = time.time() - started
+            d_calls = self._embed_calls - embed_before[0]
+            d_chars = self._embed_chars - embed_before[1]
+            counts = {"chunks": stats["total"], "embedded": stats["embedded"],
+                      "reused": stats["reused"], "embed_calls": d_calls,
+                      "embed_chars": d_chars}
+            self.catalog.finish_build_job(job_id, "done", **counts)
+            self.audit.record("rebuild_done", job_id=job_id, fingerprint=fp,
+                              duration_s=round(duration, 3),
+                              **{k: v for k, v in counts.items()})
+            if own_thread:
+                self._current_job.update(counts, state="done",
+                                         duration_s=round(duration, 3))
+            return self.status()
+        except Exception as error:
+            self.catalog.finish_build_job(job_id, "failed", error=str(error))
+            self.audit.record("rebuild_failed", job_id=job_id, error=str(error))
+            raise
+
+    def start_rebuild(self) -> dict:
+        """B1 单飞后台构建：已有任务在跑则抛 RuntimeError（路由映射 409）。"""
+        if self._current_job is not None and \
+                self._current_job.get("state") not in ("done", "failed"):
+            raise RuntimeError(f"构建任务进行中: {self._current_job['job_id']}")
+        if not self._build_lock.acquire(blocking=False):
+            raise RuntimeError("构建任务进行中")
+        job_id = uuid.uuid4().hex
+        self._current_job = {"job_id": job_id, "state": "queued",
+                             "started_at": time.time()}
+        threading.Thread(target=self._run_build_job, args=(job_id,),
+                         name=f"kb-build-{job_id[:8]}", daemon=True).start()
+        return {"job_id": job_id, "state": "queued"}
+
+    def _run_build_job(self, job_id: str) -> None:
+        try:
+            self.rebuild(force=True, job_id=job_id)
+        finally:
+            self._build_lock.release()
+
+    def current_build(self) -> dict | None:
+        return dict(self._current_job) if self._current_job else None
 
     def _ensure_built(self) -> None:
         if self._fingerprint_cache == self._fingerprint():
             return
+        if self._current_job is not None and \
+                self._current_job.get("state") not in ("done", "failed"):
+            return  # 后台构建进行中：沿用旧代际继续服务，避免并发重建
         if self.status()["built"]:
             meta = self._load_meta()
             fp = meta["fingerprint"]
@@ -423,27 +544,75 @@ class KnowledgeBase:
 
     # ---------- 问答 ----------
 
-    def _retrieve(self, query: str) -> list[tuple[IndexedChunk, float]]:
+    def _retrieve(self, query: str, allowed_ids: set[str] | None = None):
+        """Recall -> optional ACL filter -> fuse/rerank/top-k.
+
+        Returns (hits, filtered_count).
+        allowed_ids=None keeps the legacy unrestricted path (internal eval).
+        When filtering, each channel over-fetches RAW_K * ACL_OVERFETCH so an
+        authorized document crowded out by denied ones still survives; denied
+        candidates never influence fusion or rerank ordering.
+        """
         self._ensure_built()
         searcher = Searcher(self._bm25, self._vector)
-        bm25_hits = searcher.bm25_search(query, k=RAW_K)
-        vector_hits = searcher.vector_search(query, k=RAW_K)
+        filtered = 0
+        if allowed_ids is None:
+            bm25_hits = searcher.bm25_search(query, k=RAW_K)
+            vector_hits = searcher.vector_search(query, k=RAW_K)
+        else:
+            active_ids = {doc["id"] for doc in self.list_docs()}
+            allowed = allowed_ids & active_ids  # 软删除/非 ready 即使被授权也不可见
+            fetch_k = RAW_K * ACL_OVERFETCH
+            bm25_hits = searcher.bm25_search(query, k=fetch_k)
+            vector_hits = searcher.vector_search(query, k=fetch_k)
+
+            def keep(hits: list[tuple[str, float]]) -> tuple[list[tuple[str, float]], int]:
+                kept, dropped = [], 0
+                for chunk_id, score in hits:
+                    chunk = self._chunks[chunk_id]
+                    if chunk.document_id in allowed:
+                        kept.append((chunk_id, score))
+                    else:
+                        dropped += 1
+                return kept, dropped
+
+            bm25_hits, dropped_bm25 = keep(bm25_hits)
+            vector_hits, dropped_vec = keep(vector_hits)
+            filtered = dropped_bm25 + dropped_vec
+
         hits = rerank(fuse(bm25_hits, vector_hits, k=TOP_FOR_ANSWER, method="rrf"),
                       bm25_hits, vector_hits)[:TOP_FOR_ANSWER]
-        return [(self._chunks[chunk_id], score) for chunk_id, score in hits]
+        return [(self._chunks[chunk_id], score) for chunk_id, score in hits], filtered
 
-    def ask(self, query: str) -> dict:
+    def ask(self, query: str, user_id: str | None = None) -> dict:
+        """user_id=None 仅限内部脚本(评测)；HTTP 层必须携带身份，默认拒绝。"""
         if not query.strip():
             raise ValueError("问题不能为空")
-        hits = self._retrieve(query)
+        acl_meta = None
+        if user_id is None:
+            hits, filtered = self._retrieve(query)
+        else:
+            user_id = user_id.strip()
+            if not user_id:
+                raise ValueError("缺少用户身份")
+            allowed = self.catalog.allowed_document_ids(user_id)
+            hits, filtered = self._retrieve(query, allowed_ids=allowed)
+            acl_meta = {"user_id": user_id, "filtered": filtered}
         evidence = [(chunk.chunk_id, chunk.text) for chunk, _score in hits]
-        answer = ask_deepseek(build_prompt(query, evidence), temperature=TEMPERATURE)
-        retried = False
-        if is_refusal(answer):
-            answer = ask_deepseek(build_prompt(query, evidence, retry=True),
-                                  temperature=TEMPERATURE)
-            retried = True
-        return {
+        started = time.time()
+        if not evidence:
+            # 确定性拒答：零证据不进模型，杜绝参数知识幻觉与提示词长尾
+            answer = "资料不足"
+            retried = False
+        else:
+            answer = self._chat(build_prompt(query, evidence))
+            retried = False
+            if is_refusal(answer):
+                answer = self._chat(build_prompt(query, evidence, retry=True))
+                retried = True
+        latency_ms = round((time.time() - started) * 1000, 1)
+        self._ask_latencies.append(latency_ms / 1000)
+        result = {
             "query": query,
             "answer": answer,
             "refusal": is_refusal(answer),
@@ -465,6 +634,18 @@ class KnowledgeBase:
                 for i, (chunk, score) in enumerate(hits)
             ],
         }
+        if acl_meta is not None:
+            result["acl"] = acl_meta
+        result["latency_ms"] = latency_ms
+        self.audit.record(
+            "ask",
+            user_id=acl_meta["user_id"] if acl_meta else "internal",
+            filtered=acl_meta["filtered"] if acl_meta else None,
+            latency_ms=latency_ms,
+            refusal=result["refusal"],
+            retried=retried,
+        )  # 不记录问题原文，防止敏感内容落盘
+        return result
 
     # ---------- 题目集评测 ----------
 
@@ -473,14 +654,17 @@ class KnowledgeBase:
         rows = []
         for q in questions:
             qid, query, kind, checkpoints = q["qid"], q["query"], q["kind"], q["checkpoints"]
-            hits = self._retrieve(query)
+            hits, _filtered = self._retrieve(query)
             evidence = [(chunk.chunk_id, chunk.text) for chunk, _score in hits]
-            answer = ask_deepseek(build_prompt(query, evidence), temperature=TEMPERATURE)
-            retried = False
-            if is_refusal(answer):
-                answer = ask_deepseek(build_prompt(query, evidence, retry=True),
-                                      temperature=TEMPERATURE)
-                retried = True
+            if not evidence:
+                answer = "资料不足"
+                retried = False
+            else:
+                answer = self._chat(build_prompt(query, evidence))
+                retried = False
+                if is_refusal(answer):
+                    answer = self._chat(build_prompt(query, evidence, retry=True))
+                    retried = True
             refusal = is_refusal(answer)
             cites = parse_citations(answer)
             hit_kws = matching_keywords(answer, checkpoints)
