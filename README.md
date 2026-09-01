@@ -106,6 +106,29 @@ python -m venv .venv
 
 CLI 和 Web 使用同一套题目文件、语料和评测逻辑。评测会调用 DeepSeek，题目较多时会比普通提问耗时更长。
 
+## 接入 MiniAgent 工具调用
+
+MiniRAG 可作为 MiniAgent 的 `knowledge_base_search` 工具接入。工具采用
+OpenAI function-calling schema，模型只能提供 `query` 和可选的 `kb_id`；
+当前会话的 `user_id` 必须由 MiniAgent 宿主绑定，不能作为模型参数，避免
+模型伪造更高权限身份绕过 MiniRAG ACL。
+
+```python
+from app.agent_tool import KNOWLEDGE_BASE_SEARCH_TOOL, make_knowledge_base_search
+from app.main import resolve_kb
+
+# agent_session.user_id 应来自登录/会话，不要来自模型生成的 tool arguments。
+handler = make_knowledge_base_search(resolve_kb, agent_session.user_id)
+
+tools = [KNOWLEDGE_BASE_SEARCH_TOOL]
+tool_handlers = {"knowledge_base_search": handler}
+```
+
+当 MiniAgent 收到 `knowledge_base_search` tool call 时，用 JSON 参数调用
+`tool_handlers["knowledge_base_search"](**arguments)`，将返回的 JSON 作为
+`role="tool"` 消息回灌模型。返回中包含 MiniRAG 已生成的答案、拒答标记、
+引用编号和证据原文；Agent 最终回答应保留这些引用，不能把工具拒答改写成无依据的结论。
+
 ## 测试
 
 ```powershell
